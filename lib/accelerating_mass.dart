@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'particle/particle.dart';
+import '/environment_variable.dart';
 
 
 class AcceleratingMass extends StatefulWidget {
@@ -9,29 +11,22 @@ class AcceleratingMass extends StatefulWidget {
   AcceleratingMassState createState() => AcceleratingMassState();
 }
 
-double blockWidth = 50;
+
 
 class AcceleratingMassState extends State<AcceleratingMass> 
   with TickerProviderStateMixin {
-  double xPos = 0;
-double velocity = 0;
-double acceleration = 0.1;
-late Ticker ticker;
+  late Ticker ticker;
 
+  final List<Particle> particles = [
+      Particle(Coordinate(20, 30), Velocity_(0, 30), Acceleration(20, 0), 2, -1, 20, Colors.green),
+  ];
+  
   @override
   void initState() {
     super.initState();
     ticker = createTicker((Duration elapsed) {
       setState(() {
-        double width = MediaQuery.sizeOf(context).width;
-        if ( xPos < width - blockWidth ) {
-          velocity += acceleration; // increase speed
-          xPos += velocity;         // update position
-        }
-        else {
-          velocity = 0;
-          acceleration = 0;
-        }
+        update(particles);
       });
     });
     ticker.start();
@@ -43,20 +38,34 @@ late Ticker ticker;
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            top: 50,
-            left: xPos,
-            child: Container(width: blockWidth, height: 50, color: Colors.blue),
-          ),
-        ],
+    
+    
+    return MaterialApp(
+      home: Scaffold(
+        body: Stack(
+          children: particles.map((p) => p.buildWidget()).toList(),
+        ),
       ),
     );
+    
   }
-  
+
+
+//The most critical function; updates the motion of particles
+  void update(List<Particle> particles) {
+    for (var p in particles) {
+  // Calculate total force on this particle from all sources:
+        //Offset force = computeForcesOnParticle(p, particles, externalFields);
+
+  // Acceleration = force / mass (unique per particle)
+        //Offset acceleration = force / p.mass;
+
+  // Update velocity and position using acceleration
+        p.vel.xVel += p.acc.xAcc * dt;
+        p.coor.xPos += p.vel.xVel * dt;
+      }
+  }
 }
+  

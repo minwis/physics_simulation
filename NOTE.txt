@@ -1,3 +1,4 @@
-What formulas are involved: 
-1. Faraday's Law
-2. 
+1. Paint circle object
+2. Implement boris pusher
+3. Implement Verlet integrtion
+4. ?
