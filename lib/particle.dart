@@ -7,30 +7,21 @@ class Particle {
   double blockWidth = 50;
   
   int q = 0;
-  double m = 1; //unit: kg
-  double r = 2;
+  double m = 0; //unit: kg
+  double r = 0;
   Color col = Colors.green;
 
-  PosVec coorNow;
-  PosVec coorPrev;
+  PosVec coor;
   
   VelVec vel;
   AccVec acc;
 
-  void adjustScale() {
-    vel.xVel /= scaleFactor;
-    vel.yVel /= scaleFactor;
-    acc.xAcc /= scaleFactor;
-    acc.yAcc /= scaleFactor;
-  }
-
-  Particle(this.coorNow, this.coorPrev, this.vel, this.acc, this.m, this.q, this.r, this.col);
+  Particle(this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col);
 
   Widget buildWidget() {
-    adjustScale();
     return Positioned(
-      left: coorNow.xPos - r,
-      top: coorNow.yPos - r,
+      left: coor.xPos/scaleFactor - r,
+      top: coor.yPos/scaleFactor - r,
       child: Container(
         width: r * 2,
         height: r * 2,

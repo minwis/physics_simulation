@@ -19,7 +19,7 @@ class AcceleratingMassState extends State<AcceleratingMass>
   late Ticker ticker;
 
   final List<Particle> particles = [
-      Particle(PosVec(20, 30), PosVec(0, 0), VelVec(0, 0), AccVec(20, 0), 2, -1, 20, Colors.green),
+      Particle(PosVec(20, 30), VelVec(0, 0), AccVec(20, 0), 2, -1, 20, Colors.green),
   ];
   
   @override
@@ -53,12 +53,24 @@ class AcceleratingMassState extends State<AcceleratingMass>
     
   }
 
+  void calculateAcceleration(List<Particle> particles) {
+    for (var p in particles) {
+      // Reset acceleration to zero before calculating
+      p.acc.xAcc = 0;
+      p.acc.yAcc = 0;
+
+      // Apply a constant acceleration
+      p.acc.yAcc = -g; // Gravity acting downwards
+    }
+  }
 
 //The most critical function; updates the motion of particles
   void update(List<Particle> particles) {
     for (var p in particles) {
 
-      p.coorPrev = p.coorNow; //store current coordinate for Verlet Integration
+      double fG = p.m * g;
+
+      
   // Calculate total force on this particle from all sources:
         //Offset force = computeForcesOnParticle(p, particles, externalFields);
 
@@ -67,7 +79,7 @@ class AcceleratingMassState extends State<AcceleratingMass>
 
   // Update velocity and position using acceleration
         p.vel.xVel += p.acc.xAcc * dt;
-        p.coorNow.xPos += p.vel.xVel * dt;
+        p.coor.xPos += p.vel.xVel * dt;
       }
   }
 }

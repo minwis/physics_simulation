@@ -6,7 +6,7 @@ import '/environment_variable.dart';
 import '../particle.dart';
 import 'vecs.dart';
 
-VelVec borisPush(Particle p, Vec2 E, double B) {
+void borisPush(Particle p, Vec2 E, double B) { //void type output. directly changes the 
   double qmdt2 = (p.q / p.m) * dt / 2.0;
 
   // Step 1: half acceleration by E
@@ -31,5 +31,8 @@ VelVec borisPush(Particle p, Vec2 E, double B) {
   );
 
   // Step 3: half acceleration by E again
-  return ((vPlus + (E * qmdt2)) * dt as VelVec); //Returns velocity
+  p.vel =(vPlus + (E * qmdt2)) as VelVec;
+
+  // Step 4: position update
+  p.coor =(p.coor + (p.vel * dt)) as PosVec;
 }
