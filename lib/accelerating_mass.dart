@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'particle/particle.dart';
 import '/environment_variable.dart';
+import '/math/vecs.dart';
 
 
 class AcceleratingMass extends StatefulWidget {
@@ -18,7 +19,7 @@ class AcceleratingMassState extends State<AcceleratingMass>
   late Ticker ticker;
 
   final List<Particle> particles = [
-      Particle(Coordinate(20, 30), Velocity_(0, 30), Acceleration(20, 0), 2, -1, 20, Colors.green),
+      Particle(PosVec(20, 30), VelVec(0, 30), AccVec(20, 0), 2, -1, 20, Colors.green),
   ];
   
   @override

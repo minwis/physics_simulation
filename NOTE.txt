@@ -1,4 +1,7 @@
-1. Paint circle object
-2. Implement boris pusher
-3. Implement Verlet integrtion
-4. ?
+<TO-DOs>
+
+Use inheritance for a general Vector array that consists of x and y then inherit them to create velocity, acceleration, and position vectors
+
+Finalize Boris pusher
+
+Finalize Verlet Integration

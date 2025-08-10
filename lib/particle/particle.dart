@@ -1,37 +1,19 @@
 import 'package:flutter/material.dart';
-
+import '/math/vecs.dart';
 import '/environment_variable.dart';
-
-class Coordinate {
-  double xPos = 0;
-  double yPos = 0;
-  Coordinate(this.xPos, this.yPos);
-}
-
-class Velocity_ {
-  double xVel = 0;
-  double yVel = 0;
-  Velocity_(this.xVel, this.yVel);
-}
-
-class Acceleration {
-  double xAcc = 0;
-  double yAcc = 0;
-  Acceleration(this.xAcc, this.yAcc);
-}
 
 class Particle {
 
   double blockWidth = 50;
   
-  int charge = 0;
-  double mass = 1; //unit: kg
-  double radius = 2;
-  Color color = Colors.green;
+  int q = 0;
+  double m = 1; //unit: kg
+  double r = 2;
+  Color col = Colors.green;
 
-  Coordinate coor;
-  Velocity_ vel;
-  Acceleration acc;
+  PosVec coor;
+  VelVec vel;
+  AccVec acc;
 
   void adjustScale() {
     vel.xVel /= scaleFactor;
@@ -40,17 +22,18 @@ class Particle {
     acc.yAcc /= scaleFactor;
   }
 
-  Particle(this.coor, this.vel, this.acc, this.mass, this.charge, this.radius, this.color);
+  Particle(this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col);
 
   Widget buildWidget() {
+    adjustScale();
     return Positioned(
-      left: coor.xPos - radius,
-      top: coor.yPos - radius,
+      left: coor.xPos - r,
+      top: coor.yPos - r,
       child: Container(
-        width: radius * 2,
-        height: radius * 2,
+        width: r * 2,
+        height: r * 2,
         decoration: BoxDecoration(
-          color: color,
+          color: col,
           shape: BoxShape.circle,
         ),
       ),
