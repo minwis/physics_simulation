@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'accelerating_mass.dart';
+import 'acceleration.dart';
 
 void main() {
   runApp(const MyApp());

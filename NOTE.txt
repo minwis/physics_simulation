@@ -1,7 +1,10 @@
 <TO-DOs>
 
-Use inheritance for a general Vector array that consists of x and y then inherit them to create velocity, acceleration, and position vectors
-
-Finalize Boris pusher
-
 Finalize Verlet Integration
+
+
+Types of Forces
+1. Magnetic Force ==> Calculate with Boris Pusher
+2. Electric Force ==> Calculate with Verlet Integration
+3. Applied Force ==> Calculate with Verlet Integration
+4. Gravitational Force ==> Calculate with Verlet Integration

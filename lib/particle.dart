@@ -11,7 +11,9 @@ class Particle {
   double r = 2;
   Color col = Colors.green;
 
-  PosVec coor;
+  PosVec coorNow;
+  PosVec coorPrev;
+  
   VelVec vel;
   AccVec acc;
 
@@ -22,13 +24,13 @@ class Particle {
     acc.yAcc /= scaleFactor;
   }
 
-  Particle(this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col);
+  Particle(this.coorNow, this.coorPrev, this.vel, this.acc, this.m, this.q, this.r, this.col);
 
   Widget buildWidget() {
     adjustScale();
     return Positioned(
-      left: coor.xPos - r,
-      top: coor.yPos - r,
+      left: coorNow.xPos - r,
+      top: coorNow.yPos - r,
       child: Container(
         width: r * 2,
         height: r * 2,

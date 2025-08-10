@@ -3,17 +3,17 @@ Boris Pusher calculates velocity
 */
 
 import '/environment_variable.dart';
-import '/particle/particle.dart';
+import '../particle.dart';
 import 'vecs.dart';
 
-void borisPush(Particle p, Vec2 E, double b) {
+VelVec borisPush(Particle p, Vec2 E, double B) {
   double qmdt2 = (p.q / p.m) * dt / 2.0;
 
   // Step 1: half acceleration by E
   Vec2 vMinus = p.vel + (E * qmdt2);
 
   // Step 2: rotation due to B
-  double t = qmdt2 * 2 * b; // Actually qB/m * dt/2, but factor 2 in s calc
+  double t = qmdt2 * 2 * B; // Actually qB/m * dt/2, but factor 2 in s calc
   double tMag2 = t * t;
   double s = (2 * t) / (1 + tMag2);
 
@@ -31,8 +31,5 @@ void borisPush(Particle p, Vec2 E, double b) {
   );
 
   // Step 3: half acceleration by E again
-  p.vel =(vPlus + (E * qmdt2)) as VelVec;
-
-  // Step 4: position update
-  p.coor =(p.coor + (p.vel * dt)) as PosVec;
+  return ((vPlus + (E * qmdt2)) * dt as VelVec); //Returns velocity
 }
