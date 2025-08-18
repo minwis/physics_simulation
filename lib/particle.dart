@@ -11,7 +11,7 @@ class Particle {
   double r = 0;
   Color col = Colors.green;
 
-  double dragCoeff = 0.47;
+  double dragCoeff = 0.47; //average drag coefficient of the object.
 
   PosVec coor;
   
