@@ -11,6 +11,8 @@ class Particle {
   double r = 0;
   Color col = Colors.green;
 
+  double dragCoeff = 0.47;
+
   PosVec coor;
   
   VelVec vel;

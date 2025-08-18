@@ -13,7 +13,6 @@ class AcceleratingMass extends StatefulWidget {
 }
 
 
-
 class AcceleratingMassState extends State<AcceleratingMass> 
   with TickerProviderStateMixin {
   late Ticker ticker;
@@ -53,11 +52,20 @@ class AcceleratingMassState extends State<AcceleratingMass>
     
   }
 
+  AccVec gravityAcceleration(double mass) {
+    return AccVec(0, mass * g);
+  }
+
+  
+
   void calculateAcceleration(List<Particle> particles) {
     for (var p in particles) {
       // Reset acceleration to zero before calculating
+      
       p.acc.xAcc = 0;
       p.acc.yAcc = 0;
+
+
 
       // Apply a constant acceleration
       p.acc.yAcc = -g; // Gravity acting downwards
@@ -68,7 +76,7 @@ class AcceleratingMassState extends State<AcceleratingMass>
   void update(List<Particle> particles) {
     for (var p in particles) {
 
-      double fG = p.m * g;
+      
 
       
   // Calculate total force on this particle from all sources:
@@ -83,4 +91,3 @@ class AcceleratingMassState extends State<AcceleratingMass>
       }
   }
 }
-  
