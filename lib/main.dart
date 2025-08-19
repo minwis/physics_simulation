@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      body: AcceleratingMass(),
+      body: SimulationPage(),
     );
   }
 }

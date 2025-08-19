@@ -31,8 +31,8 @@ void borisPush(Particle p, Vec2 E, double B) { //void type output. directly chan
   );
 
   // Step 3: half acceleration by E again
-  p.vel =(vPlus + (E * qmdt2)) as VelVec;
+  p.vel =(vPlus + (E * qmdt2));
 
   // Step 4: position update
-  p.coor =(p.coor + (p.vel * dt)) as PosVec;
+  p.coor =(p.coor + (p.vel * dt));
 }

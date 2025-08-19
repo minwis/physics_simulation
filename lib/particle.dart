@@ -13,17 +13,17 @@ class Particle {
 
   double dragCoeff = 0.47; //average drag coefficient of the object.
 
-  PosVec coor;
+  Vec2 coor;
   
-  VelVec vel;
-  AccVec acc;
+  Vec2 vel;
+  Vec2 acc;
 
   Particle(this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col);
 
   Widget buildWidget() {
     return Positioned(
-      left: coor.xPos/scaleFactor - r,
-      top: coor.yPos/scaleFactor - r,
+      left: coor.x/scaleFactor - r,
+      top: coor.y/scaleFactor - r,
       child: Container(
         width: r * 2,
         height: r * 2,

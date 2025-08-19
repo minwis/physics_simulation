@@ -14,9 +14,9 @@ import '/environment_variable.dart';
 
 
 void VerletIntegration(Particle p) {
-  VelVec vHalf = p.vel + p.acc * (0.5 * dt) as VelVec;
-  p.coor = p.coor + (vHalf * dt) as PosVec;
+  Vec2 vHalf = p.vel + p.acc * (0.5 * dt);
+  p.coor = p.coor + (vHalf * dt);
 
-  
-  p.vel = p.vel + vHalf + ((p.coor) * (dt * 0.5)) as VelVec;
+
+  p.vel = p.vel + vHalf + ((p.coor) * (dt * 0.5));
 }

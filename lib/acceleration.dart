@@ -5,20 +5,20 @@ import '/environment_variable.dart';
 import '/math/vecs.dart';
 
 
-class AcceleratingMass extends StatefulWidget {
-  AcceleratingMass({Key? key}) : super(key: key);
+class SimulationPage extends StatefulWidget {
+  SimulationPage({Key? key}) : super(key: key);
 
   @override
-  AcceleratingMassState createState() => AcceleratingMassState();
+  SimulationPageState createState() => SimulationPageState();
 }
 
 
-class AcceleratingMassState extends State<AcceleratingMass> 
+class SimulationPageState extends State<SimulationPage> 
   with TickerProviderStateMixin {
   late Ticker ticker;
 
   final List<Particle> particles = [
-      Particle(PosVec(20, 30), VelVec(0, 0), AccVec(20, 0), 2, -1, 20, Colors.green),
+      Particle(Vec2(20, 30), Vec2(0, 0), Vec2(20, 0), 2, -1, 20, Colors.green),
   ];
   
   @override
@@ -52,9 +52,15 @@ class AcceleratingMassState extends State<AcceleratingMass>
     
   }
 
-  AccVec gravityAcceleration(double mass) {
-    return AccVec(0, mass * g);
+  Vec2 gravityAcceleration(double mass) {
+    return Vec2(0, mass * g);
   }
+
+/*
+  AccVec dragAcceleration(Particle p) {
+    
+    //return -0.5 * (p_fluid * )
+  }*/
 
   
 
@@ -62,13 +68,13 @@ class AcceleratingMassState extends State<AcceleratingMass>
     for (var p in particles) {
       // Reset acceleration to zero before calculating
       
-      p.acc.xAcc = 0;
-      p.acc.yAcc = 0;
+      p.acc.x = 0;
+      p.acc.y = 0;
 
 
 
       // Apply a constant acceleration
-      p.acc.yAcc = -g; // Gravity acting downwards
+      p.acc.y = -g; // Gravity acting downwards
     }
   }
 
@@ -86,8 +92,8 @@ class AcceleratingMassState extends State<AcceleratingMass>
         //Offset acceleration = force / p.mass;
 
   // Update velocity and position using acceleration
-        p.vel.xVel += p.acc.xAcc * dt;
-        p.coor.xPos += p.vel.xVel * dt;
+        p.vel.x += p.acc.x * dt;
+        p.coor.x += p.vel.x * dt;
       }
   }
 }
