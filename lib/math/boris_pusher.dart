@@ -4,7 +4,7 @@ Boris Pusher calculates velocity
 
 import '/environment_variable.dart';
 import '../particle.dart';
-import 'vecs.dart';
+import '../vecs.dart';
 
 void borisPush(Particle p, Vec2 E, double B) { //void type output. directly changes the 
   double qmdt2 = (p.q / p.m) * dt / 2.0;

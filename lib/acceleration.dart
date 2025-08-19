@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:physics_simulation/math/boris_pusher.dart';
+import 'package:physics_simulation/math/verlet_integration.dart';
 import 'particle.dart';
 import '/environment_variable.dart';
-import '/math/vecs.dart';
+import 'vecs.dart';
 
 
 class SimulationPage extends StatefulWidget {
@@ -18,7 +20,7 @@ class SimulationPageState extends State<SimulationPage>
   late Ticker ticker;
 
   final List<Particle> particles = [
-      Particle(Vec2(20, 30), Vec2(0, 0), Vec2(20, 0), 2, -1, 20, Colors.green),
+      Particle(Vec2(0,0),Vec2(20, 30), Vec2(0, 0), Vec2(20, 0), 2, -1, 20, Colors.green),
   ];
   
   @override
@@ -52,29 +54,31 @@ class SimulationPageState extends State<SimulationPage>
     
   }
 
-  Vec2 gravityAcceleration(double mass) {
-    return Vec2(0, mass * g);
+  Vec2 gravityAcceleration(double mass) { //gravitational force
+    return Vec2(0, -mass * g);
   }
 
-/*
-  AccVec dragAcceleration(Particle p) {
-    
-    //return -0.5 * (p_fluid * )
-  }*/
+
+  Vec2 dragAcceleration(Particle p) { //
+    Vec2 vFluidVec = Vec2( vFluid, vFluid);
+    Vec2 relativeVel = vFluidVec - p.vel;
+    Vec2 relativeVelSquared = relativeVel^2;
+    return relativeVelSquared * (-0.5 * dFluid * p.A);
+  }
 
   
 
-  void calculateAcceleration(List<Particle> particles) {
+  void updateAcceleration(Particle p) { //List<Particle> particles
     for (var p in particles) {
       // Reset acceleration to zero before calculating
-      
-      p.acc.x = 0;
-      p.acc.y = 0;
+      p.acc = p.appliedAcc + gravityAcceleration(p.m);
 
+      verletIntegration(p);
 
+      dragAcceleration(p);
 
-      // Apply a constant acceleration
-      p.acc.y = -g; // Gravity acting downwards
+      borisPush(p, Vec2(E, E), B);
+
     }
   }
 
@@ -83,7 +87,7 @@ class SimulationPageState extends State<SimulationPage>
     for (var p in particles) {
 
       
-
+      updateAcceleration(p);
       
   // Calculate total force on this particle from all sources:
         //Offset force = computeForcesOnParticle(p, particles, externalFields);

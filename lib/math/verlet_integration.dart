@@ -8,12 +8,12 @@ For
 2. Time-dependent forces
 */
 
-import 'package:physics_simulation/math/vecs.dart';
+import 'package:physics_simulation/vecs.dart';
 import 'package:physics_simulation/particle.dart';
 import '/environment_variable.dart';
 
 
-void VerletIntegration(Particle p) {
+void verletIntegration(Particle p, ) {
   Vec2 vHalf = p.vel + p.acc * (0.5 * dt);
   p.coor = p.coor + (vHalf * dt);
 
