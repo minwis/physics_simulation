@@ -1,4 +1,4 @@
-const double scaleFactor = 1; //scale factor 1: m/s; scale factor 1000: km/s
+const double scaleFactor = 0.01; //scale factor 1: m/s; scale factor 1000: km/s
 
 const double g = 9.8123;
 

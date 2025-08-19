@@ -1,6 +1,5 @@
 <TO-DOs>
-
-Either option A or option B.
+1. Slow down the animation speed using AnimationController
 
 
 Types of Forces
@@ -8,39 +7,3 @@ Types of Forces
 2. Electric Force ==> Calculate with Verlet Integration
 3. Applied Force ==> Calculate with Verlet Integration
 4. Gravitational Force ==> Calculate with Verlet Integration
-
-
-
-Option A — Put all non-magnetic forces in Boris’s half-step kicks
-Elastic force (Hooke’s law, 
-−
-𝑘
-𝑥
-−kx),
-
-Applied force (constant or time-varying push),
-
-Gravity, electric, drag
-→ all go into the half-step kicks around the magnetic rotation.
-
-Why?
-
-Keeps everything second-order accurate and time-centered.
-
-This is the “classic” generalized Boris approach I mentioned earlier.
-
-Drag is still easy to include here as an explicit term (no post-step needed).
-
-Option B — Post-Boris corrections for forces that are easier to apply separately
-Use Boris for E + B + gravity + elastic (forces that benefit from time-centering).
-
-Then apply drag and any “instant” applied force after Boris finishes the step.
-
-Why?
-
-Keeps Boris’s structure clean.
-
-Drag can be integrated with its own best method (e.g., exact exponential for linear drag).
-
-If an “applied force” is more like an impulse (kick), it’s natural to add it after Boris.
-

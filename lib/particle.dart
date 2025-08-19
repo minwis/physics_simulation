@@ -23,20 +23,19 @@ class Particle {
   
   Vec2 vel;
   Vec2 acc;
-
-  Vec2 originalCoor = Vec2(0,0);
-
+  
   Particle(this.appliedAcc, this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col) {
     A = r*r*r;
-    originalCoor = coor;
   }
+  
+  //Particle(this.appliedAcc, this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col);
+
   Widget buildWidget() {
-    print(coor.x);
-    print(coor.y);
     return Positioned(
       
-      left: originalCoor.x + coor.x/scaleFactor - r,
-      top: originalCoor.y + coor.y/scaleFactor - r,
+      left: (coor.x - r) * scaleFactor,
+      top: (coor.y - r) * scaleFactor,
+      
       child: Container(
         width: r * 2,
         height: r * 2,

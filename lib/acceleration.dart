@@ -55,7 +55,7 @@ class SimulationPageState extends State<SimulationPage>
   }
 
   Vec2 gravityAcceleration(double mass) { //gravitational force
-    return Vec2(0, -mass * g);
+    return Vec2(0, -g);
   }
 
 
@@ -63,14 +63,16 @@ class SimulationPageState extends State<SimulationPage>
     Vec2 vFluidVec = Vec2( vFluid, vFluid);
     Vec2 relativeVel = vFluidVec - p.vel;
     Vec2 relativeVelSquared = relativeVel^2;
-    return relativeVelSquared * (-0.5 * dFluid * p.A);
+    return relativeVelSquared * (-0.5 * dFluid * p.A / p.m);
   }
 
   
 
   void updateAcceleration(Particle p) { //List<Particle> particles
+    
     for (var p in particles) {
-      // Reset acceleration to zero before calculating
+      // Reset acceleration to zero before calculating\
+      
       p.acc = p.appliedAcc + gravityAcceleration(p.m);
 
       verletIntegration(p);
@@ -84,20 +86,22 @@ class SimulationPageState extends State<SimulationPage>
 
 //The most critical function; updates the motion of particles
   void update(List<Particle> particles) {
+    //double screenWidth = MediaQuery.of(context).size.width;
+    //double screenHeight = MediaQuery.of(context).size.height;
     for (var p in particles) {
-
-      
       updateAcceleration(p);
       
-  // Calculate total force on this particle from all sources:
+        // Calculate total force on this particle from all sources:
         //Offset force = computeForcesOnParticle(p, particles, externalFields);
 
-  // Acceleration = force / mass (unique per particle)
+        // Acceleration = force / mass (unique per particle)
         //Offset acceleration = force / p.mass;
 
-  // Update velocity and position using acceleration
+        // Update velocity and position using acceleration
         p.vel.x += p.acc.x * dt;
+        p.vel.y += p.acc.y * dt;
         p.coor.x += p.vel.x * dt;
-      }
+      
+    }
   }
 }
