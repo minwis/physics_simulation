@@ -5,7 +5,7 @@ import '/environment_variable.dart';
 import 'vecs.dart';
 
 class SimulationPage extends StatefulWidget {
-  SimulationPage({Key? key}) : super(key: key);
+  const SimulationPage({super.key});
 
   @override
   SimulationPageState createState() => SimulationPageState();
@@ -63,12 +63,11 @@ class SimulationPageState extends State<SimulationPage>
   }
 
   Vec2 drag(Particle p, Vec2 velVec) {
-    //
     Vec2 vFluidVec = Vec2(vFluid, vFluid);
-    //Vec2 relativeVel = vFluidVec - velVec;
-    //Vec2 relativeVelSquared = relativeVel^2;
-    //return relativeVelSquared * (-0.5 * dFluid * p.A / p.m);
-    return Vec2(0, 0);
+    Vec2 relativeVel = vFluidVec - velVec;
+    Vec2 relativeVelSquared = relativeVel^2;
+    return relativeVelSquared * (-0.5 * dFluid * p.A / p.m);
+    //return Vec2(0, 0);
   }
 
   Vec2 magnetic(Particle p, Vec2 velVec) {
@@ -84,9 +83,9 @@ class SimulationPageState extends State<SimulationPage>
   Vec2 acceleration(Particle p) {
     //List<Particle> particles
     Vec2 force = gravity(p.m);
-    //force += drag(p, p.vel);
-    //force += magnetic(p, p.vel);
-    //force += electric(p, E); //uniform E in current scenario
+    force += drag(p, p.vel);
+    force += magnetic(p, p.vel);
+    force += electric(p, E); //uniform E in current scenario
     return force / p.m;
   }
 

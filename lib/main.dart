@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'acceleration.dart';
-import 'particle.dart';
 
 void main() {
   runApp(const MyApp());
