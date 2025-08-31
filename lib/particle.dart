@@ -28,10 +28,10 @@ class Particle {
 
   bool accelerate = true;
 
-  Vec2 maxVel = Vec2(0,0);
+  //Vec2 
   
   Particle(this. force, this.appliedAcc, this.pos, this.posPrev, this.vel, this.m, this.q, this.r, this.col) {
-    A = r*r*r;
+    A = pi * r * r;
   }
   
   //Particle(this.appliedAcc, this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col);

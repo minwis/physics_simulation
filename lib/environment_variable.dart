@@ -12,6 +12,8 @@ const double B = 1.4; //Unit: Tesla. 1.4 is avg. magneticc field strength of com
 
 Vec2 E = Vec2(0,2); //Unit: Newton / Columb. 
 
-const double vFluid = 0;
+//const double vFluid = 30;
 
-const double dFluid = 997;
+//const double dFluid = 1.29;
+
+const double k = 0.1;

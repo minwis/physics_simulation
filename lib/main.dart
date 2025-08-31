@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:physics_simulation/environment_variable.dart';
 import 'acceleration.dart';
 
 void main() {
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightGreen),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
       ),
       home: MyHomePage(
         title: 'Physics Simulation'
@@ -53,29 +54,62 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      backgroundColor: const Color.fromARGB(255, 221, 240, 200),
       body: Row(
         children: [
           Expanded(child: SimulationPage()),
+          
           SizedBox (
-            width: 100, 
+            width: 150, 
             child: SingleChildScrollView(
               child: Column(
                 
                 children: [
                   //SimulationPage(),
+
+                  Text(
+                    "Environment Variables: ",
+                     style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                     )
+                  ),
+                  Text("G Strength: $g"),
+                  Text("dt: 1/6"),
+                  Text("B(uniform): $B"),
+                  Text("Drag Coeff: $k"),                  
+
+                  Text(
+                    "Particle Variables: ",
+                     style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                     )
+                  ),
+                  //Text("Environment Variables: "),
                   Text("Mass: ${SimulationPageState.particles[0].m}"),
                   Text("Charge: ${SimulationPageState.particles[0].q}"),
                   Text("X-Coor: ${SimulationPageState.particles[0].pos.x.toStringAsFixed(2)}"),
                   Text("Y-Coor: ${SimulationPageState.particles[0].pos.y.toStringAsFixed(2)}"),
                   Text("X-Vel: ${SimulationPageState.particles[0].vel.x.toStringAsFixed(2)}"),
                   Text("Y-Vel: ${SimulationPageState.particles[0].vel.y.toStringAsFixed(2)}"),
+                  Text("Drag Coeff: ${SimulationPageState.particles[0].dragCoeff.toStringAsFixed(2)}"),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.black,
+                    ),
+                    onPressed: (){
+                      SimulationPageState.ticker.muted = !SimulationPageState.ticker.muted;
+                    },
+                    child: Text("Stop/Resume")
+                  )
               ]
             ),
           )
           )
         ]
-      )
+      ),
+
       //body: SimulationPage()
     );
   }

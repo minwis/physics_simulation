@@ -13,7 +13,7 @@ class SimulationPage extends StatefulWidget {
 
 class SimulationPageState extends State<SimulationPage>
     with TickerProviderStateMixin {
-  late Ticker ticker;
+  static late Ticker ticker;
 
   static List<Particle> particles = [
     Particle(
@@ -33,6 +33,9 @@ class SimulationPageState extends State<SimulationPage>
     return particles;
   }
 
+  void muteTicker() {
+    ticker.muted = true;
+  }
   @override
   void initState() {
     super.initState();
@@ -62,17 +65,19 @@ class SimulationPageState extends State<SimulationPage>
     return Vec2(0, g * mass);
   }
 
-  Vec2 drag(Particle p, Vec2 velVec) {
-    Vec2 vFluidVec = Vec2(vFluid, vFluid);
+  Vec2 drag(Vec2 velVec) {
+    /*Vec2 vFluidVec = Vec2(vFluid, vFluid);
     Vec2 relativeVel = vFluidVec - velVec;
-    Vec2 relativeVelSquared = relativeVel^2;
-    return relativeVelSquared * (-0.5 * dFluid * p.A / p.m);
-    //return Vec2(0, 0);
+    //Vec2 relativeVelSquared = relativeVel^2;
+    Vec2 dragForce = relativeVel * (0.5 * dFluid * p.A);
+    return Vec2(dragForce.x.abs(), dragForce.y.abs());*/
+    return velVec * k;
+  
   }
 
   Vec2 magnetic(Particle p, Vec2 velVec) {
     Vec2 lorentzForce = velVec * (B * p.q); //assumes sin(theta) = 1
-    return lorentzForce;
+    return Vec2(lorentzForce.x.abs(), lorentzForce.y.abs());
   }
 
   Vec2 electric(Particle p, Vec2 E) {
@@ -83,9 +88,9 @@ class SimulationPageState extends State<SimulationPage>
   Vec2 acceleration(Particle p) {
     //List<Particle> particles
     Vec2 force = gravity(p.m);
-    force += drag(p, p.vel);
+    //force -= drag(p.vel);
     force += magnetic(p, p.vel);
-    force += electric(p, E); //uniform E in current scenario
+    //force -= electric(p, E); //uniform E in current scenario
     return force / p.m;
   }
 
@@ -93,29 +98,32 @@ class SimulationPageState extends State<SimulationPage>
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     for (var p in particles) {
-      Vec2 acc = acceleration(p);
-      p.vel = p.vel + (acc * dt);
-      p.pos = p.pos + p.vel * dt;
+      if ( p.accelerate ) {
+        Vec2 acc = acceleration(p);
+        p.vel = p.vel + (acc * dt);
+        p.pos = p.pos + p.vel * dt;
+      }
+      
 
       // boundaries
       if (p.pos.x <= 0) {
         p.pos.x = 0;
-        p.vel.x = 0;
-        p.maxVel = p.vel;
+        //p.vel.x = 0;
+        p.accelerate = false;
       } else if (p.pos.x >= screenWidth - 4 * p.r) {
         p.pos.x = screenWidth - 4 * p.r;
-        p.vel.x = 0;
-        p.maxVel = p.vel;
+        //p.vel.x = 0;
+        p.accelerate = false;
       }
 
       if (p.pos.y <= 0) {
         p.pos.y = 0;
-        p.vel.y = 0;
-        p.maxVel = p.vel;
+        //p.vel.y = 0;
+        p.accelerate = false;
       } else if (p.pos.y >= screenHeight - 4 * p.r) {
         p.pos.y = screenHeight - 4 * p.r;
-        //print(p.vel.y);
-        p.vel.y = 0;
+        //p.vel.y = 0;
+        p.accelerate = false;
         
       }
     }
