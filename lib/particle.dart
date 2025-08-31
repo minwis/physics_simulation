@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'vecs.dart';
-import '/environment_variable.dart';
 
 class Particle {
 
@@ -36,8 +35,8 @@ class Particle {
   Widget buildWidget() {
     return Positioned(
       
-      left: (pos.x - r) * scaleFactor,
-      top: (pos.y - r) * scaleFactor,
+      left: pos.x,
+      top: pos.y,
       
       child: Container(
         width: r * 2,

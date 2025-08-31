@@ -10,6 +10,8 @@ class SimulationPage extends StatefulWidget {
 
   @override
   SimulationPageState createState() => SimulationPageState();
+
+  
 }
 
 
@@ -17,9 +19,13 @@ class SimulationPageState extends State<SimulationPage>
   with TickerProviderStateMixin {
   late Ticker ticker;
 
-  final List<Particle> particles = [
-      Particle(Vec2(0,0),Vec2(0,0),Vec2(0, 0), Vec2(0, 0), Vec2(0, 0), 2, -1, 20, Colors.green),
+  static List<Particle> particles = [
+    Particle(Vec2(0,0),Vec2(0,0),Vec2(0, 0), Vec2(0, 0), Vec2(0, 0), 2, -1, 20, Colors.green),
   ];
+
+  List<Particle> particlesGetter () {
+    return particles;
+  }
   
   @override
   void initState() {
@@ -42,11 +48,9 @@ class SimulationPageState extends State<SimulationPage>
   Widget build(BuildContext context) {
     
     
-    return MaterialApp(
-      home: Scaffold(
-        body: Stack(
-          children: particles.map((p) => p.buildWidget()).toList(),
-        ),
+    return Scaffold(
+      body: Stack(
+        children: particles.map((p) => p.buildWidget()).toList(),
       ),
     );
     
@@ -59,8 +63,8 @@ class SimulationPageState extends State<SimulationPage>
 
   Vec2 drag(Particle p, Vec2 velVec) { //
     Vec2 vFluidVec = Vec2( vFluid, vFluid);
-    Vec2 relativeVel = vFluidVec - velVec;
-    Vec2 relativeVelSquared = relativeVel^2;
+    //Vec2 relativeVel = vFluidVec - velVec;
+    //Vec2 relativeVelSquared = relativeVel^2;
     //return relativeVelSquared * (-0.5 * dFluid * p.A / p.m);
     return Vec2(0,0);
   }
@@ -76,7 +80,7 @@ class SimulationPageState extends State<SimulationPage>
   }
 
   Vec2 acceleration(Particle p) { //List<Particle> particles
-    Vec2 force = gravity(p.m);
+    Vec2 force = gravity(p.m) * -1;
     force += drag(p, p.vel);
     force += magnetic(p, p.vel);
     force += electric(p, E); //uniform E in current scenario
@@ -87,8 +91,11 @@ class SimulationPageState extends State<SimulationPage>
     //double screenWidth = MediaQuery.of(context).size.width;
     //double screenHeight = MediaQuery.of(context).size.height;
     for (var p in particles) {
-      p.posPrev = p.pos;
+      //p.posPrev = p.pos;
 
+      Vec2 acc = acceleration(p);
+      p.vel = p.vel + acc * dt;
+      p.pos = p.pos + p.vel * dt;
 
     }
   }
@@ -96,10 +103,7 @@ class SimulationPageState extends State<SimulationPage>
   void velocityVerlet( Particle p ) {
     //update position
     Vec2 acc = acceleration(p);
-    //p.pos = p.pos + (p.pos - p.posPrev ) + acc * (dt) * (dt);
-    p.vel = p.vel + acc * dt;
-    p.pos = p.pos + p.vel * dt;
-
+    p.pos = p.pos + (p.pos - p.posPrev ) + acc * (dt) * (dt);
     
 
     //update velocity and acceleration
