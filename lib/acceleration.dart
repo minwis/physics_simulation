@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:physics_simulation/math/boris_pusher.dart';
-import 'package:physics_simulation/math/verlet_integration.dart';
 import 'particle.dart';
 import '/environment_variable.dart';
 import 'vecs.dart';
@@ -20,7 +18,7 @@ class SimulationPageState extends State<SimulationPage>
   late Ticker ticker;
 
   final List<Particle> particles = [
-      Particle(Vec2(0,0),Vec2(20, 30), Vec2(0, 0), Vec2(20, 0), 2, -1, 20, Colors.green),
+      Particle(Vec2(0,0),Vec2(0,0),Vec2(0, 0), Vec2(0, 0), Vec2(0, 0), 2, -1, 20, Colors.green),
   ];
   
   @override
@@ -54,54 +52,59 @@ class SimulationPageState extends State<SimulationPage>
     
   }
 
-  Vec2 gravityAcceleration(double mass) { //gravitational force
+  Vec2 gravity(double mass) { //gravitational force
     return Vec2(0, -g);
   }
 
 
-  Vec2 dragAcceleration(Particle p) { //
+  Vec2 drag(Particle p, Vec2 velVec) { //
     Vec2 vFluidVec = Vec2( vFluid, vFluid);
-    Vec2 relativeVel = vFluidVec - p.vel;
+    Vec2 relativeVel = vFluidVec - velVec;
     Vec2 relativeVelSquared = relativeVel^2;
-    return relativeVelSquared * (-0.5 * dFluid * p.A / p.m);
+    //return relativeVelSquared * (-0.5 * dFluid * p.A / p.m);
+    return Vec2(0,0);
   }
 
-  
-
-  void updateAcceleration(Particle p) { //List<Particle> particles
-    
-    for (var p in particles) {
-      // Reset acceleration to zero before calculating\
-      
-      p.acc = p.appliedAcc + gravityAcceleration(p.m);
-
-      verletIntegration(p);
-
-      dragAcceleration(p);
-
-      borisPush(p, Vec2(E, E), B);
-
-    }
+  Vec2 magnetic(Particle p, Vec2 velVec) {
+    Vec2 lorentzForce = velVec * (B * p.q); //assumes sin(theta) = 1
+    return lorentzForce;
   }
 
-//The most critical function; updates the motion of particles
+  Vec2 electric(Particle p, Vec2 E) {
+    Vec2 electricForce = E * p.q;
+    return electricForce;
+  }
+
+  Vec2 acceleration(Particle p) { //List<Particle> particles
+    Vec2 force = gravity(p.m);
+    force += drag(p, p.vel);
+    force += magnetic(p, p.vel);
+    force += electric(p, E); //uniform E in current scenario
+    return force / p.m;
+  }
+
   void update(List<Particle> particles) {
     //double screenWidth = MediaQuery.of(context).size.width;
     //double screenHeight = MediaQuery.of(context).size.height;
     for (var p in particles) {
-      updateAcceleration(p);
-      
-        // Calculate total force on this particle from all sources:
-        //Offset force = computeForcesOnParticle(p, particles, externalFields);
+      p.posPrev = p.pos;
 
-        // Acceleration = force / mass (unique per particle)
-        //Offset acceleration = force / p.mass;
 
-        // Update velocity and position using acceleration
-        p.vel.x += p.acc.x * dt;
-        p.vel.y += p.acc.y * dt;
-        p.coor.x += p.vel.x * dt;
-      
     }
+  }
+
+  void velocityVerlet( Particle p ) {
+    //update position
+    Vec2 acc = acceleration(p);
+    //p.pos = p.pos + (p.pos - p.posPrev ) + acc * (dt) * (dt);
+    p.vel = p.vel + acc * dt;
+    p.pos = p.pos + p.vel * dt;
+
+    
+
+    //update velocity and acceleration
+    //Vec2 velNew = p.vel + 0.5 * (acc + )
+    
+    //p.vel = p.vel + ()
   }
 }

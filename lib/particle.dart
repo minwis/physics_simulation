@@ -8,7 +8,7 @@ class Particle {
 
   double blockWidth = 50;
   
-  int q = 0;
+  double q = 0.0; //for simplicity of calculation; it will only hold integer values
   double m = 0; //unit: kg
   double r = 0;
   Color col = Colors.green;
@@ -19,12 +19,15 @@ class Particle {
 
   Vec2 appliedAcc;
 
-  Vec2 coor;
+  Vec2 pos;
+
+  Vec2 posPrev;
   
   Vec2 vel;
-  Vec2 acc;
+
+  Vec2 force;
   
-  Particle(this.appliedAcc, this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col) {
+  Particle(this. force, this.appliedAcc, this.pos, this.posPrev, this.vel, this.m, this.q, this.r, this.col) {
     A = r*r*r;
   }
   
@@ -33,8 +36,8 @@ class Particle {
   Widget buildWidget() {
     return Positioned(
       
-      left: (coor.x - r) * scaleFactor,
-      top: (coor.y - r) * scaleFactor,
+      left: (pos.x - r) * scaleFactor,
+      top: (pos.y - r) * scaleFactor,
       
       child: Container(
         width: r * 2,
