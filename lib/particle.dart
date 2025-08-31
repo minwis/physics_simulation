@@ -25,6 +25,8 @@ class Particle {
   Vec2 vel;
 
   Vec2 force;
+
+  bool accelerate = true;
   
   Particle(this. force, this.appliedAcc, this.pos, this.posPrev, this.vel, this.m, this.q, this.r, this.col) {
     A = r*r*r;

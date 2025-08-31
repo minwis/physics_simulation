@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'acceleration.dart';
 import 'particle.dart';
@@ -36,6 +38,17 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   @override
+  void initState() {
+    super.initState();
+
+      // Example: refresh every 16ms (~60fps)
+      Timer.periodic(Duration(milliseconds: 16), (timer) {
+        setState(() {}); // forces rebuild, pulls new pos.x/pos.y values
+    });
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -49,11 +62,15 @@ class _MyHomePageState extends State<MyHomePage> {
             width: 100, 
             child: SingleChildScrollView(
               child: Column(
+                
                 children: [
+                  //SimulationPage(),
                   Text("Mass: ${SimulationPageState.particles[0].m}"),
                   Text("Charge: ${SimulationPageState.particles[0].q}"),
-                  Text("X-Cooo: ${SimulationPageState.particles[0].pos.x}"),
-                  Text("X-Cooo: ${SimulationPageState.particles[0].pos.y}"),
+                  Text("X-Coor: ${SimulationPageState.particles[0].pos.x.toStringAsFixed(2)}"),
+                  Text("Y-Coor: ${SimulationPageState.particles[0].pos.y.toStringAsFixed(2)}"),
+                  Text("X-Vel: ${SimulationPageState.particles[0].vel.x.toStringAsFixed(2)}"),
+                  Text("Y-Vel: ${SimulationPageState.particles[0].vel.y.toStringAsFixed(2)}"),
               ]
             ),
           )
