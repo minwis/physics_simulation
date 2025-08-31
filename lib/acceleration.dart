@@ -102,17 +102,22 @@ class SimulationPageState extends State<SimulationPage>
       if (p.pos.x <= 0) {
         p.pos.x = 0;
         p.vel.x = 0;
+        p.maxVel = p.vel;
       } else if (p.pos.x >= screenWidth - 4 * p.r) {
         p.pos.x = screenWidth - 4 * p.r;
         p.vel.x = 0;
+        p.maxVel = p.vel;
       }
 
       if (p.pos.y <= 0) {
         p.pos.y = 0;
         p.vel.y = 0;
+        p.maxVel = p.vel;
       } else if (p.pos.y >= screenHeight - 4 * p.r) {
         p.pos.y = screenHeight - 4 * p.r;
+        //print(p.vel.y);
         p.vel.y = 0;
+        
       }
     }
   }
