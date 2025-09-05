@@ -16,6 +16,8 @@ class Particle {
 
   double dragCoeff = 0.47; //average drag coefficient of the object.
 
+  Vec2 acc;
+  
   Vec2 appliedAcc;
 
   Vec2 pos;
@@ -30,7 +32,7 @@ class Particle {
 
   //Vec2 
   
-  Particle(this. force, this.appliedAcc, this.pos, this.posPrev, this.vel, this.m, this.q, this.r, this.col) {
+  Particle(this. force, this.acc, this.appliedAcc, this.pos, this.posPrev, this.vel, this.m, this.q, this.r, this.col) {
     A = pi * r * r;
   }
   
