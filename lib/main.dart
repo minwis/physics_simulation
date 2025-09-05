@@ -1,4 +1,4 @@
-import 'dart:async';
+//import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:physics_simulation/environment_variable.dart';
@@ -35,20 +35,26 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
 
-  
+  late AnimationController _animationController; //declaring animation controller
   
   @override
   void initState() {
     super.initState();
 
-      // Example: refresh every 16ms (~60fps)
-      Timer.periodic(Duration(milliseconds: 16), (timer) {
-        setState(() {}); // forces rebuild, pulls new pos.x/pos.y values
-    });
-  }
+    _animationController = AnimationController( //initializing animation controller
+      duration: Duration(seconds: 1),
+      vsync: this,
+    );
 
+    _animationController.forward(); //starts the animation from its lower bound(0) to its upper bound
+
+    _animationController.addListener( () { //updates the animation everytime it is called.
+        setState(() {});
+      }
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,10 +107,20 @@ class _MyHomePageState extends State<MyHomePage> {
                       foregroundColor: Colors.black,
                     ),
                     onPressed: (){
-                      SimulationPageState.ticker.muted = !SimulationPageState.ticker.muted;
+                      _animationController.stop();
                     },
-                    child: Text("Stop/Resume")
-                  )
+                    child: Text("Stop")
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.black,
+                    ),
+                    onPressed: (){
+                      _animationController.forward();
+                    },
+                    child: Text("Resume")
+                  ),
               ]
             ),
           )

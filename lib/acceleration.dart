@@ -101,9 +101,9 @@ class SimulationPageState extends State<SimulationPage>
     for (var p in particles) {
       if ( p.accelerate ) {
         Vec2 acc = acceleration(p);
-        p.vel = p.vel + (acc * dt);
+        p.vel = p.vel + (acc * (dt.toDouble()));
         p.posPrev = p.pos; //saving previous position.
-        p.pos = p.pos + p.vel * dt;
+        p.pos = p.pos + p.vel * (dt.toDouble());
       }
       
 
@@ -133,17 +133,17 @@ class SimulationPageState extends State<SimulationPage>
 
   //explicit verlet integration
   void velocityVerlet(Particle p) { 
-  //save current position to the previous position. 
+    //save current position to the previous position. 
     p.posPrev = p.pos; 
 
     //calculate current acceleration. both velocity-dependent and velocity-not-dependent forces are acting on the system
     p.acc = acceleration(p);
     
     //update position. standard explicit verlet integration
-    p.pos = p.pos + (((p.pos - p.posPrev) * dt ) + (p.acc * (dt * dt * 0.5))); //update position
+    p.pos = p.pos + (((p.pos - p.posPrev) * (dt.toDouble()) ) + (p.acc * ( (dt.toDouble()) * (dt.toDouble()) * 0.5))); //update position
 
     //update velocity - Predictor Corrector
     //acceleration and velocity have inter-dependency, so standard explicit verlet integration cannot apply
-
+    
   }
 }
