@@ -132,10 +132,7 @@ class SimulationPageState extends State<SimulationPage>
   }
 
   //explicit verlet integration
-  void velocityVerlet(Particle p) { 
-    //save current position to the previous position. 
-    p.posPrev = p.pos; 
-
+  void velocityVerlet(Particle p) {
     //calculate current acceleration. both velocity-dependent and velocity-not-dependent forces are acting on the system
     p.acc = acceleration(p);
     
@@ -145,5 +142,7 @@ class SimulationPageState extends State<SimulationPage>
     //update velocity - Predictor Corrector
     //acceleration and velocity have inter-dependency, so standard explicit verlet integration cannot apply
     
+    //save current position to the previous position. 
+    p.posPrev = p.pos; 
   }
 }
