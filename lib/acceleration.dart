@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'particle.dart';
 import '/environment_variable.dart';
 import 'vecs.dart';
+import '/boris_pusher.dart';
 
 class SimulationPage extends StatefulWidget {
   const SimulationPage({super.key});
@@ -23,6 +24,7 @@ class SimulationPageState extends State<SimulationPage>
       Vec2(1, 1),
       Vec2(0, 0),
       Vec2(0, 0),
+      Vec2(2, 0),
       0.5,
       -1,
       20,
@@ -86,13 +88,14 @@ class SimulationPageState extends State<SimulationPage>
     return electricForce;
   }
 
-  Vec2 acceleration(Particle p) {
+  Vec2 force(Particle p) {
     //List<Particle> particles
     Vec2 force = gravity(p.m);
-    //force -= drag(p.vel);
-    force += magnetic(p, p.vel);
+    force -= drag(p.vel);
+    //force += magnetic(p, p.vel);
     //force -= electric(p, E); //uniform E in current scenario
-    return force / p.m;
+    //return force / p.m;
+    return force;
   }
 
   void update(List<Particle> particles) {
@@ -100,7 +103,7 @@ class SimulationPageState extends State<SimulationPage>
     double screenHeight = MediaQuery.of(context).size.height;
     for (var p in particles) {
       if ( p.accelerate ) {
-        Vec2 acc = acceleration(p);
+        Vec2 acc = force(p) / p.m;
         p.vel = p.vel + (acc * (dt.toDouble()));
         p.posPrev = p.pos; //saving previous position.
         p.pos = p.pos + p.vel * (dt.toDouble());
@@ -133,16 +136,19 @@ class SimulationPageState extends State<SimulationPage>
 
   //explicit verlet integration
   void velocityVerlet(Particle p) {
-    //calculate current acceleration. both velocity-dependent and velocity-not-dependent forces are acting on the system
-    p.acc = acceleration(p);
-    
-    //update position. standard explicit verlet integration
-    p.pos = p.pos + (((p.pos - p.posPrev) * (dt.toDouble()) ) + (p.acc * ( (dt.toDouble()) * (dt.toDouble()) * 0.5))); //update position
+    //first half kick for non-lorentz force
+    Vec2 vStar = p.vMinusHalf + force(p) * (dt / 2*p.m);
 
-    //update velocity - Predictor Corrector
-    //acceleration and velocity have inter-dependency, so standard explicit verlet integration cannot apply
-    
-    //save current position to the previous position. 
-    p.posPrev = p.pos; 
+    //full kick for lorentz force(boris algorithm)
+    Vec2 vHat = borisPush(p, E, B, vStar);
+
+    //second half kick 
+    Vec2 vPlusHalf = vHat + force(p) * (dt / 2*p.m);
+
+    //update position
+    p.pos = p.pos + vPlusHalf * dt.toDouble();
+
+    //update v^(n-1/2)
+    p.vMinusHalf = vPlusHalf; 
   }
 }

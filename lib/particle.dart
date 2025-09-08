@@ -30,9 +30,11 @@ class Particle {
 
   bool accelerate = true;
 
+  Vec2 vMinusHalf;
+
   //Vec2 
   
-  Particle(this. force, this.acc, this.appliedAcc, this.pos, this.posPrev, this.vel, this.m, this.q, this.r, this.col) {
+  Particle(this. force, this.acc, this.appliedAcc, this.pos, this.posPrev, this.vel, this.vMinusHalf, this.m, this.q, this.r, this.col) {
     A = pi * r * r;
   }
   
