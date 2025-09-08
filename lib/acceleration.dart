@@ -135,7 +135,7 @@ class SimulationPageState extends State<SimulationPage>
   }
 
   //explicit verlet integration
-  void velocityVerlet(Particle p) {
+  void update_(Particle p) {
     //first half kick for non-lorentz force
     Vec2 vStar = p.vMinusHalf + force(p) * (dt / 2*p.m);
 

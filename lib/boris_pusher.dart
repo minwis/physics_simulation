@@ -6,16 +6,14 @@ import '/environment_variable.dart';
 import '../particle.dart';
 import 'vecs.dart';
 
-Vec2 borisPush(Particle p, Vec2 E, double B, Vec2 vStar) { //void type output. directly changes the 
-  double x = vStar.x;
-  double y = vStar.y;
+Vec2 borisPush(Particle p, Vec2 E, double B, Vec2 vStar) {
   
   double qmdt2 = (p.q / p.m) * dt / 2.0;
 
-  // Step 1: half acceleration by E
+  //half acceleration by E
   Vec2 vMinus = vStar + (E * qmdt2);
 
-  // Step 2: rotation due to B
+  //rotation due to B
   double t = qmdt2 * 2 * B; // Actually qB/m * dt/2, but factor 2 in s calc
   double tMag2 = t * t;
   double s = (2 * t) / (1 + tMag2);
