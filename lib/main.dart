@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
     super.initState();
 
     _animationController = AnimationController( //initializing animation controller
-      duration: Duration(seconds: 1),
+      //duration: Duration(seconds: 10),
       vsync: this,
     );
 

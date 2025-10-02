@@ -6,17 +6,15 @@ import '/environment_variable.dart';
 import '../particle.dart';
 import 'vecs.dart';
 
-Vec2 borisPush(Particle p, Vec2 E, double B, Vec2 vStar) {
+Vec2 borisPush(Particle p, Vec2 E, double B, Vec2 v) {
   
-  double qmdt2 = (p.q / p.m) * dt / 2.0;
+  double t = (p.q / p.m) * dt * 0.5 * B;
+
+  //rotation scalar
+  double s = (2 * t) / (1 + t * t);
 
   //half acceleration by E
-  Vec2 vMinus = vStar + (E * qmdt2);
-
-  //rotation due to B
-  double t = qmdt2 * 2 * B; // Actually qB/m * dt/2, but factor 2 in s calc
-  double tMag2 = t * t;
-  double s = (2 * t) / (1 + tMag2);
+  Vec2 vMinus = v + (E * ((p.q / p.m) * dt / 2.0));
 
   // Rotate vMinus in plane
   // v' = vMinus + vMinus × t (in 2D, cross with z is just rotate 90°)
@@ -32,7 +30,7 @@ Vec2 borisPush(Particle p, Vec2 E, double B, Vec2 vStar) {
   );
 
   // Step 3: half acceleration by E again
-  return (vPlus + (E * qmdt2));
+  return (vPlus + (E * t));
 
   // Step 4: position update
   //p.pos =(p.pos + (p.vel * dt.toDouble()));

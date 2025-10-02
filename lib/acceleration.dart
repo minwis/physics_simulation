@@ -12,23 +12,22 @@ class SimulationPage extends StatefulWidget {
   SimulationPageState createState() => SimulationPageState();
 }
 
-class SimulationPageState extends State<SimulationPage>
-    with TickerProviderStateMixin {
+class SimulationPageState extends State<SimulationPage> with TickerProviderStateMixin {
   static late Ticker ticker;
 
   static List<Particle> particles = [
     Particle(
-      Vec2(0, 0),
-      Vec2(0, 0),
-      Vec2(0, 0),
-      Vec2(1, 1),
-      Vec2(0, 0),
-      Vec2(0, 0),
-      Vec2(2, 0),
-      0.5,
-      -1,
-      20,
-      Colors.green,
+      Vec2(0, 0), //force
+      Vec2(0, 0), //acc
+      Vec2(0, 0), //applicedAcc
+      Vec2(1, 1), //pos
+      Vec2(0, 0), //posPrev
+      Vec2(0, 0), //vel
+      Vec2(2, 0), //vMinusHalf
+      0.5, // m
+      -1, // q
+      20, //r
+      Colors.green, //col
     ),
   ];
 
@@ -75,7 +74,6 @@ class SimulationPageState extends State<SimulationPage>
     Vec2 dragForce = relativeVel * (0.5 * dFluid * p.A);
     return Vec2(dragForce.x.abs(), dragForce.y.abs());*/
     return velVec * k;
-  
   }
 
   Vec2 magnetic(Particle p, Vec2 velVec) {
@@ -91,7 +89,7 @@ class SimulationPageState extends State<SimulationPage>
   Vec2 force(Particle p) {
     //List<Particle> particles
     Vec2 force = gravity(p.m);
-    force -= drag(p.vel);
+    //force -= drag(p.vel);
     //force += magnetic(p, p.vel);
     //force -= electric(p, E); //uniform E in current scenario
     //return force / p.m;
@@ -103,13 +101,19 @@ class SimulationPageState extends State<SimulationPage>
     double screenHeight = MediaQuery.of(context).size.height;
     for (var p in particles) {
       if ( p.accelerate ) {
-        Vec2 acc = force(p) / p.m;
+        /*Vec2 acc = force(p) / p.m;
         p.vel = p.vel + (acc * (dt.toDouble()));
         p.posPrev = p.pos; //saving previous position.
-        p.pos = p.pos + p.vel * (dt.toDouble());
-      }
-      
+        p.pos = p.pos + p.vel * (dt.toDouble());*/
 
+        //update_(p);
+      }
+
+      Vec2 vec2 = Vec2(0, 9.8);
+      p.vel = p.vel + vec2;
+      p.pos = p.pos * dt.toDouble();
+      
+      
       // boundaries
       if (p.pos.x <= 0) {
         p.pos.x = 0;
@@ -129,26 +133,32 @@ class SimulationPageState extends State<SimulationPage>
         p.pos.y = screenHeight - 4 * p.r;
         //p.vel.y = 0;
         p.accelerate = false;
-        
       }
+      
     }
   }
 
   //explicit verlet integration
   void update_(Particle p) {
-    //first half kick for non-lorentz force
-    Vec2 vStar = p.vMinusHalf + force(p) * (dt / 2*p.m);
+    // 1) first half-kick with force at current coordinate
+    Vec2 vStar = p.vMinusHalf + force(p) * (dt / (2 * p.m));
 
-    //full kick for lorentz force(boris algorithm)
+    // 2) Boris push for Lorentz
     Vec2 vHat = borisPush(p, E, B, vStar);
 
-    //second half kick 
-    Vec2 vPlusHalf = vHat + force(p) * (dt / 2*p.m);
+    // 3) predict new position (drift with vHat)
+    Vec2 posPred = p.pos + vHat * dt.toDouble();
 
-    //update position
-    p.pos = p.pos + vPlusHalf * dt.toDouble();
+    // 4) recompute force at predicted position
+    Vec2 fPred = force(p);
 
-    //update v^(n-1/2)
-    p.vMinusHalf = vPlusHalf; 
+    // 5) second half-kick
+    Vec2 vPlusHalf = vHat + fPred * (dt / (2 * p.m));
+
+    // 6) finalize position update
+    p.pos = posPred;
+
+    // 7) store velocity for next step
+    p.vMinusHalf = vPlusHalf;
   }
 }
