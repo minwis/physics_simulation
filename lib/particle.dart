@@ -14,23 +14,23 @@ class Particle {
 
   double A = 1.333333333333333 * pi; //3/4  * pi
 
-  double dragCoeff = 0.47; //average drag coefficient of the object.
+  double dragCoeff = 0; //average drag coefficient of the object.
 
-  Vec2 acc;
+  Vec2 acc = Vec2(0,0);
   
-  Vec2 appliedAcc;
+  Vec2 appliedAcc = Vec2(0,0);
 
-  Vec2 pos;
+  Vec2 pos = Vec2(0,0);
 
-  Vec2 posPrev;
+  Vec2 posPrev = Vec2(0,0);
   
-  Vec2 vel;
+  Vec2 vel = Vec2(0,0);
 
-  Vec2 force;
+  Vec2 force = Vec2(0,0);
 
   bool accelerate = true;
 
-  Vec2 vMinusHalf;
+  Vec2 vMinusHalf = Vec2(0,0);
 
   //Vec2 
   

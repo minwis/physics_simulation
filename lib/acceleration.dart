@@ -99,40 +99,24 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   void update(List<Particle> particles) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    for (var p in particles) {
-      if ( p.accelerate ) {
-        /*Vec2 acc = force(p) / p.m;
-        p.vel = p.vel + (acc * (dt.toDouble()));
-        p.posPrev = p.pos; //saving previous position.
-        p.pos = p.pos + p.vel * (dt.toDouble());*/
+    for (var p in particles) { //iterate the "particles" list for all particles
 
-        //update_(p);
+      update_(p);//update position
+
+      if (p.pos.x <= 0) { //particle going beyond left boundary
+        p.pos.x = 0; //return the particle to the leftmost position
+        p.accelerate = false; //prevent further acceleration
+      } else if (p.pos.x >= screenWidth - 4 * p.r) { //particle going beyond right boundary
+        p.pos.x = screenWidth - 4 * p.r; //return the particle to the rightmost position
+        p.accelerate = false; //prevent further acceleration
       }
 
-      Vec2 vec2 = Vec2(0, 9.8);
-      p.vel = p.vel + vec2;
-      p.pos = p.pos * dt.toDouble();
-      
-      
-      // boundaries
-      if (p.pos.x <= 0) {
-        p.pos.x = 0;
-        //p.vel.x = 0;
-        p.accelerate = false;
-      } else if (p.pos.x >= screenWidth - 4 * p.r) {
-        p.pos.x = screenWidth - 4 * p.r;
-        //p.vel.x = 0;
-        p.accelerate = false;
-      }
-
-      if (p.pos.y <= 0) {
-        p.pos.y = 0;
-        //p.vel.y = 0;
-        p.accelerate = false;
-      } else if (p.pos.y >= screenHeight - 4 * p.r) {
-        p.pos.y = screenHeight - 4 * p.r;
-        //p.vel.y = 0;
-        p.accelerate = false;
+      if (p.pos.y <= 0) { //particle going beyond maximum height
+        p.pos.y = 0; //return the particle to the maximum position
+        p.accelerate = false; //prevent further acceleration
+      } else if (p.pos.y >= screenHeight - 4 * p.r) { //particle going below minimum height
+        p.pos.y = screenHeight - 4 * p.r; //return the particle to the minimum position
+        p.accelerate = false; //prevent further acceleration
       }
       
     }
@@ -141,24 +125,27 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   //explicit verlet integration
   void update_(Particle p) {
     // 1) first half-kick with force at current coordinate
-    Vec2 vStar = p.vMinusHalf + force(p) * (dt / (2 * p.m));
+    Vec2 v1 = p.vMinusHalf + force(p) * (dt / (2 * p.m));
 
-    // 2) Boris push for Lorentz
-    Vec2 vHat = borisPush(p, E, B, vStar);
+    // 2) adjusting velocity with Boris push for Lorentz
+    v1 = borisPush(p, E, B, v1);
 
-    // 3) predict new position (drift with vHat)
-    Vec2 posPred = p.pos + vHat * dt.toDouble();
+    // 3) predict new position
+    Vec2 posPred = p.pos + v1 * dt.toDouble();
 
-    // 4) recompute force at predicted position
-    Vec2 fPred = force(p);
-
-    // 5) second half-kick
-    Vec2 vPlusHalf = vHat + fPred * (dt / (2 * p.m));
-
-    // 6) finalize position update
+    // 4) finalize position update
     p.pos = posPred;
 
-    // 7) store velocity for next step
-    p.vMinusHalf = vPlusHalf;
+    // 5) recompute force at predicted position
+    Vec2 fPred = force(p);
+
+    // 6) second half-kick for non-lorentz force
+    Vec2 v2 = v1 + fPred * (dt / (2 * p.m));
+
+    // 7) adjusting velocity with Boris push for Lorentz
+    v2 = borisPush(p, E, B, v1);
+
+    // 8) store velocity for next step
+    p.vMinusHalf = v2;
   }
 }
