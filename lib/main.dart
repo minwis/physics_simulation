@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:physics_simulation/environment_variable.dart';
-import 'acceleration.dart';
+import 'move.dart';
 import 'particle.dart';
 import 'vecs.dart';
 
@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
@@ -43,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage>
 
     _animationController = AnimationController(
       //initializing animation controller
-      duration: Duration(seconds: 10),
+      duration: Duration(minutes: 120),
       vsync: this,
     );
 
@@ -140,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      backgroundColor: const Color.fromARGB(255, 221, 240, 200),
+      //backgroundColor: const Color.fromARGB(255, 221, 240, 200),
       body: Row(
         children: [
           Expanded(child: SimulationPage()),
@@ -152,16 +153,16 @@ class _MyHomePageState extends State<MyHomePage>
                 children: [
                   Text(
                     "Environment Variables: ",
-                    style: TextStyle(fontStyle: FontStyle.italic),
+                    //style: TextStyle(fontStyle: italic),
                   ),
                   Text("G Strength: $g"),
-                  Text("dt: 1/6"),
+                  Text("dt: $dt"),
                   Text("B(uniform): $B"),
                   Text("Drag Coeff: $k"),
 
                   Text(
                     "Particle Variables: ",
-                    style: TextStyle(fontStyle: FontStyle.italic),
+                    //style: TextStyle(fontStyle: FontStyle.italic),
                   ),
                   Text("Mass: ${SimulationPageState.particles[0].m}"),
                   Text("Charge: ${SimulationPageState.particles[0].q}"),
@@ -187,6 +188,7 @@ class _MyHomePageState extends State<MyHomePage>
                     ),
                     onPressed: () {
                       _animationController.stop();
+                      isStop = !isStop;
                     },
                     child: Text("Stop"),
                   ),

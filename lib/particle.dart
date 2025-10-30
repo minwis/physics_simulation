@@ -10,7 +10,7 @@ class Particle {
   double q = 0.0; //for simplicity of calculation; it will only hold integer values
   double m = 0; //unit: kg
   double r = 0;
-  Color col = Colors.green;
+  MaterialColor col = Colors.green;
 
   double A = 1.333333333333333 * pi; //3/4  * pi
 

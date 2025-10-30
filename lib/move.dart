@@ -23,7 +23,7 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
       Vec2(1, 1), //pos
       Vec2(0, 0), //posPrev
       Vec2(0, 0), //vel
-      Vec2(2, 0), //vMinusHalf
+      Vec2(0, 0), //vMinusHalf
       0.5, // m
       -1, // q
       20, //r
@@ -62,9 +62,8 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
     );
   }
 
-  Vec2 gravity(double mass) {
-    //gravitational force
-    return Vec2(0, g * mass);
+  Vec2 gravityAcc(double mass) { //gravitational force
+    return Vec2(0, g);
   }
 
   Vec2 drag(Vec2 velVec) {
@@ -86,48 +85,47 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
     return electricForce;
   }
 
-  Vec2 force(Particle p) {
+  Vec2 calculateAcc(Particle p) {
     //List<Particle> particles
-    Vec2 force = gravity(p.m);
+    Vec2 acc = gravityAcc(p.m);
     //force -= drag(p.vel);
-    //force += magnetic(p, p.vel);
-    //force -= electric(p, E); //uniform E in current scenario
-    //return force / p.m;
-    return force;
+    return acc;
   }
 
   void update(List<Particle> particles) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     for (var p in particles) { //iterate the "particles" list for all particles
-
-      update_(p);//update position
-
       if (p.pos.x <= 0) { //particle going beyond left boundary
-        p.pos.x = 0; //return the particle to the leftmost position
+        p.pos.x = 1; //return the particle to the leftmost position
         p.accelerate = false; //prevent further acceleration
       } else if (p.pos.x >= screenWidth - 4 * p.r) { //particle going beyond right boundary
-        p.pos.x = screenWidth - 4 * p.r; //return the particle to the rightmost position
+        p.pos.x = screenWidth - 4 * p.r +1; //return the particle to the rightmost position
         p.accelerate = false; //prevent further acceleration
       }
 
       if (p.pos.y <= 0) { //particle going beyond maximum height
-        p.pos.y = 0; //return the particle to the maximum position
+        p.pos.y = 1; //return the particle to the maximum position
         p.accelerate = false; //prevent further acceleration
       } else if (p.pos.y >= screenHeight - 4 * p.r) { //particle going below minimum height
-        p.pos.y = screenHeight - 4 * p.r; //return the particle to the minimum position
+        p.pos.y = screenHeight - 4 * p.r + 1; //return the particle to the minimum position
         p.accelerate = false; //prevent further acceleration
       }
+
+      updatePosition(p); //update position
       
     }
   }
 
   //explicit verlet integration
-  void update_(Particle p) {
-    // 1) first half-kick with force at current coordinate
-    Vec2 v1 = p.vMinusHalf + force(p) * (dt / (2 * p.m));
+  void updatePosition(Particle p) {
+    if ( !p.accelerate || isStop ) return;
 
-    // 2) adjusting velocity with Boris push for Lorentz
+    
+    /*// 1) first half-kick with force at current coordinate
+    Vec2 v1 = p.vMinusHalf + calculateAcc(p) * (dt / (2 * p.m));
+
+    // 2) adjusting velocity with Boris push for Lorentz force
     v1 = borisPush(p, E, B, v1);
 
     // 3) predict new position
@@ -137,7 +135,7 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
     p.pos = posPred;
 
     // 5) recompute force at predicted position
-    Vec2 fPred = force(p);
+    Vec2 fPred = calculateAcc(p);
 
     // 6) second half-kick for non-lorentz force
     Vec2 v2 = v1 + fPred * (dt / (2 * p.m));
@@ -147,5 +145,26 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
 
     // 8) store velocity for next step
     p.vMinusHalf = v2;
+    */
+
+    //Verlet Integration
+    /* 
+    // 1. Calculate the half-step velocity (v(t + 0.5*dt))
+    var halfVel = p.vel + p.acc * (0.5 * dt);
+
+    // 2. Position Full-Step (r(t + dt))
+    p.pos = p.pos + halfVel * dt;
+
+    // 3. Calculate new acceleration (a(t + dt)) based on the new position
+    var newAcc = calculateAcc(p); // Assuming calculateAcc uses p.pos
+
+    // 4. Velocity Full-Step (v(t + dt))
+    // This uses the half-step velocity and the average of the old and new acceleration's second half contribution
+    p.vel = halfVel + newAcc * (0.5 * dt);
+
+    // 5. Update the acceleration for the next step's "old acceleration"
+    p.acc = newAcc;
+    */
+    
   }
 }
