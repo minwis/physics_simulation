@@ -114,8 +114,8 @@
                   Navigator.of(context).pop();
                   particleMenuList.add(
                     DropdownMenuItem<int> (
-                      value: SimulationPageState.particles.length+1,
-                      child: Text('Particle ${SimulationPageState.particles.length+1}')
+                      value: SimulationPageState.particles.length,
+                      child: Text('Particle ${SimulationPageState.particles.length}')
                     )
                   );
                   SimulationPageState.particles.add(
@@ -267,7 +267,7 @@
                         ),
                         onChanged: (int? newValue) {
                           setState( () {
-                            _selectedParticle = newValue ?? 1;
+                            _selectedParticle = newValue ?? 0;
                           });
                         },
                         items: particleMenuList
