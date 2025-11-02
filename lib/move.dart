@@ -17,11 +17,8 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
 
   static List<Particle> particles = [
     Particle(
-      Vec2(0, 0), //force
       Vec2(0, 0), //acc
-      Vec2(0, 0), //applicedAcc
       Vec2(100, 100),//pos
-      Vec2(0, 0), //posPrev
       Vec2(100, -100), //vel
       Vec2(0, 0), //vMinusHalf
       1, // m
@@ -38,6 +35,7 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   void muteTicker() {
     ticker.muted = true;
   }
+
   @override
   void initState() {
     super.initState();
@@ -65,24 +63,25 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   void update(List<Particle> particles) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    for (var p in particles) { //iterate the "particles" list for all particles
-      if (p.pos.x <= 0) { //particle going beyond left boundary
-        p.pos.x = 1; //return the particle to the leftmost position
-        p.accelerate = false; //prevent further acceleration
-      } else if (p.pos.x >= screenWidth - 4 * p.r) { //particle going beyond right boundary
-        p.pos.x = screenWidth - 4 * p.r +1; //return the particle to the rightmost position
-        p.accelerate = false; //prevent further acceleration
+    for (int i = 0; i < particles.length; i++ ) { //iterate the "particles" list for all particles
+      
+      if (particles[i].pos.x <= 0) { //particle going beyond left boundary
+        particles[i].pos.x = 1; //return the particle to the leftmost position
+        particles[i].accelerate = false; //prevent further acceleration
+      } else if (particles[i].pos.x >= screenWidth - 4 * particles[i].r) { //particle going beyond right boundary
+        particles[i].pos.x = screenWidth - 4 * particles[i].r +1; //return the particle to the rightmost position
+        particles[i].accelerate = false; //prevent further acceleration
       }
 
-      if (p.pos.y <= 0) { //particle going beyond maximum height
-        p.pos.y = 1; //return the particle to the maximum position
-        p.accelerate = false; //prevent further acceleration
-      } else if (p.pos.y >= screenHeight - 4 * p.r) { //particle going below minimum height
-        p.pos.y = screenHeight - 4 * p.r + 1; //return the particle to the minimum position
-        p.accelerate = false; //prevent further acceleration
+      if (particles[i].pos.y <= 0) { //particle going beyond maximum height
+        particles[i].pos.y = 1; //return the particle to the maximum position
+        particles[i].accelerate = false; //prevent further acceleration
+      } else if (particles[i].pos.y >= screenHeight - 4 * particles[i].r) { //particle going below minimum height
+        particles[i].pos.y = screenHeight - 4 * particles[i].r + 1; //return the particle to the minimum position
+        particles[i].accelerate = false; //prevent further acceleration
       }
 
-      updatePosition(p); //update position
+      updatePosition(particles[i]); //update position
       
     }
   }
@@ -101,10 +100,9 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   }
 
   Vec2 calculateAcc(Particle p) {
-    Vec2 acc = new Vec2(0,0);
-    //List<Particle> particles
-    //acc = gravityAcc(p.m);
-    //force -= drag(p.vel);
+    Vec2 acc = p.acc;
+    acc += gravityAcc(p.m);
+    
     return acc;
   }
 

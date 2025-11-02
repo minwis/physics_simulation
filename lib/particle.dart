@@ -12,7 +12,7 @@ class Particle {
   double q = 0.0; //for simplicity of calculation; it will only hold integer values
   double m = 0; //unit: kg
   double r = 0;
-  MaterialColor col = Colors.green;
+  Color col = Color.fromRGBO(76, 175, 80, 1);
 
   double A = 1.333333333333333 * pi; //3/4  * pi
 
@@ -35,15 +35,10 @@ class Particle {
   Vec2 vMinusHalf = Vec2(0,0);
 
   double qd = 0;
-
-  //Vec2 
   
   Particle(
-    this.force, 
     this.acc, 
-    this.appliedAcc, 
     this.pos, 
-    this.posPrev, 
     this.vel, 
     this.vMinusHalf, 
     this.m, 
