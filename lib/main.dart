@@ -25,6 +25,7 @@
     }
 
     class MyHomePage extends StatefulWidget {
+
       const MyHomePage({super.key, required this.title});
 
       final String title;
@@ -35,6 +36,11 @@
 
     class _MyHomePageState extends State<MyHomePage>
         with SingleTickerProviderStateMixin {
+      
+      
+      int _selectedParticle = 0;
+      
+      
       late AnimationController
       _animationController; //declaring animation controller
 
@@ -62,7 +68,7 @@
         double y = 0;
 
         //eliminate all spacing
-        String input = value.replaceAll(' ', ''); 
+        String input = value.replaceAll(' ', '');
         //split x and y values with comma
         List<String> parts = input.split(','); 
         //if comma is used
@@ -83,10 +89,10 @@
       }
 
       void addNewParticle() {
-        Vec2 pos = new Vec2(0,0);
-        Vec2 vel = new Vec2(0,0);
-        Vec2 acc = new Vec2(0,0);
-        Vec2 vMinusHalf = new Vec2(0,0);
+        Vec2 pos = Vec2(0,0);
+        Vec2 vel = Vec2(0,0);
+        Vec2 acc = Vec2(0,0);
+        Vec2 vMinusHalf = Vec2(0,0);
         double m = 0.1; 
         double q = 0;
         double r = 0; 
@@ -106,16 +112,22 @@
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
+                  particleMenuList.add(
+                    DropdownMenuItem<int> (
+                      value: SimulationPageState.particles.length+1,
+                      child: Text('Particle ${SimulationPageState.particles.length+1}')
+                    )
+                  );
                   SimulationPageState.particles.add(
                     Particle(
-                      acc, //acc
-                      pos, //pos
-                      vel, //
-                      vMinusHalf, //
-                      m, // m
-                      q, // q
-                      r, //r
-                      col, //col; color.
+                      acc,
+                      pos,
+                      vel,
+                      vMinusHalf,
+                      m,
+                      q,
+                      r,
+                      col,
                     ),
                   );
                 },
@@ -215,8 +227,12 @@
         );
       }
 
+      List<DropdownMenuItem<int>> particleMenuList = [];
+
       @override
       Widget build(BuildContext context) {
+        
+
         return Scaffold(
           appBar: AppBar(title: Text(widget.title)),
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -226,7 +242,7 @@
 
               
               SizedBox(
-                width: 200,
+                width: 400,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
@@ -239,27 +255,69 @@
                       Text("B(uniform): $B"),
                       Text("Drag Coeff: $k"),
 
+
+                      //choose which particle to display
+                      DropdownButton(
+                        menuWidth: 50,
+                        value: _selectedParticle,
+                        //icon: const Icon(Icons.menu),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                        ),
+                        onChanged: (int? newValue) {
+                          setState( () {
+                            _selectedParticle = newValue ?? 1;
+                          });
+                        },
+                        items: particleMenuList
+                      ),
+
+
+                      
                       Text(
                         "Particle Variables: ",
-                        //style: TextStyle(fontStyle: FontStyle.italic),
-                      ),
-                      Text("Mass: ${SimulationPageState.particles[0].m}"),
-                      Text("Charge: ${SimulationPageState.particles[0].q}"),
-                      Text(
-                        "X-Coor: ${SimulationPageState.particles[0].pos.x.toStringAsFixed(2)}",
+                        style: TextStyle(fontStyle: FontStyle.italic),
                       ),
                       Text(
-                        "Y-Coor: ${SimulationPageState.particles[0].pos.y.toStringAsFixed(2)}",
+                        SimulationPageState.particles.isEmpty
+                        ? "No particle"
+                        : "Mass: ${SimulationPageState.particles[_selectedParticle].m}"
                       ),
                       Text(
-                        "X-Vel: ${SimulationPageState.particles[0].vel.x.toStringAsFixed(2)}",
+                        SimulationPageState.particles.isEmpty
+                        ? "No particle"
+                        : "Charge: ${SimulationPageState.particles[_selectedParticle].q}"
                       ),
                       Text(
-                        "Y-Vel: ${SimulationPageState.particles[0].vel.y.toStringAsFixed(2)}",
+                        SimulationPageState.particles.isEmpty
+                        ? "No particle"
+                        : "X-Coor: ${SimulationPageState.particles[_selectedParticle].pos.x.toStringAsFixed(2)}",
                       ),
                       Text(
-                        "Drag Coeff: ${SimulationPageState.particles[0].dragCoeff.toStringAsFixed(2)}",
+                        SimulationPageState.particles.isEmpty
+                        ? "No particle"
+                        : "Y-Coor: ${SimulationPageState.particles[_selectedParticle].pos.y.toStringAsFixed(2)}",
                       ),
+                      Text(
+                        SimulationPageState.particles.isEmpty
+                        ? "No particle"
+                        : "X-Vel: ${SimulationPageState.particles[_selectedParticle].vel.x.toStringAsFixed(2)}",
+                      ),
+                      Text(
+                        SimulationPageState.particles.isEmpty
+                        ? "No particle"
+                        : "Y-Vel: ${SimulationPageState.particles[_selectedParticle].vel.y.toStringAsFixed(2)}",
+                      ),
+                      Text(
+                        SimulationPageState.particles.isEmpty
+                        ? "No particle"
+                        : "Drag Coeff: ${SimulationPageState.particles[_selectedParticle].dragCoeff.toStringAsFixed(2)}",
+                      ),
+
+
+
+
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,

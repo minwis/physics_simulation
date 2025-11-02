@@ -16,7 +16,7 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   static late Ticker ticker;
 
   static List<Particle> particles = [
-    Particle(
+    /*Particle(
       Vec2(0, 0), //acc
       Vec2(100, 100),//pos
       Vec2(100, -100), //vel
@@ -25,7 +25,7 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
       1, // q
       10, //r
       Colors.green, //col
-    ),
+    ),*/
   ];
 
   List<Particle> particlesGetter() {
