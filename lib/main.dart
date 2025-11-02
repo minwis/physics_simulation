@@ -89,9 +89,9 @@
       }
 
       void addNewParticle() {
-        Vec2 pos = Vec2(0,0);
-        Vec2 vel = Vec2(0,0);
-        Vec2 acc = Vec2(0,0);
+        Vec2 pos = new Vec2(0,0);
+        Vec2 vel = new Vec2(0,0);
+        Vec2 acc = new Vec2(0,0);
         Vec2 vMinusHalf = Vec2(0,0);
         double m = 0.1; 
         double q = 0;
@@ -208,6 +208,7 @@
                   },
                 ),
                 SizedBox(height: 16),
+                Text("Be sure to press 'return/enter' key when entering variables.")
 
                 //color input
                 /*TextField(
@@ -242,13 +243,12 @@
 
               
               SizedBox(
-                width: 400,
+                width: 200,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
                       Text(
                         "Environment Variables: ",
-                        //style: TextStyle(fontStyle: italic),
                       ),
                       Text("G Strength: $g"),
                       Text("dt: $dt"),
@@ -258,12 +258,12 @@
 
                       //choose which particle to display
                       DropdownButton(
-                        menuWidth: 50,
+                        menuWidth: 100,
                         value: _selectedParticle,
                         //icon: const Icon(Icons.menu),
                         style: const TextStyle(
                           color: Colors.black,
-                          fontSize: 10,
+                          fontSize: 15,
                         ),
                         onChanged: (int? newValue) {
                           setState( () {
