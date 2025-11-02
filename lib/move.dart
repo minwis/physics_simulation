@@ -3,7 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'particle.dart';
 import '/environment_variable.dart';
 import 'vecs.dart';
-import '/boris_pusher.dart';
+import 'boris_pusher.dart';
 
 class SimulationPage extends StatefulWidget {
   const SimulationPage({super.key});
@@ -20,13 +20,13 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
       Vec2(0, 0), //force
       Vec2(0, 0), //acc
       Vec2(0, 0), //applicedAcc
-      Vec2(1, 1), //pos
+      Vec2(100, 100),//pos
       Vec2(0, 0), //posPrev
-      Vec2(0, 0), //vel
+      Vec2(100, -100), //vel
       Vec2(0, 0), //vMinusHalf
-      0.5, // m
-      -1, // q
-      20, //r
+      1, // m
+      1, // q
+      10, //r
       Colors.green, //col
     ),
   ];
@@ -58,38 +58,8 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: particles.map((p) => p.buildWidget()).toList()),
+      body: Stack(children: particles.map((p) => p.build()).toList()),
     );
-  }
-
-  Vec2 gravityAcc(double mass) { //gravitational force
-    return Vec2(0, g);
-  }
-
-  Vec2 drag(Vec2 velVec) {
-    /*Vec2 vFluidVec = Vec2(vFluid, vFluid);
-    Vec2 relativeVel = vFluidVec - velVec;
-    //Vec2 relativeVelSquared = relativeVel^2;
-    Vec2 dragForce = relativeVel * (0.5 * dFluid * p.A);
-    return Vec2(dragForce.x.abs(), dragForce.y.abs());*/
-    return velVec * k;
-  }
-
-  Vec2 magnetic(Particle p, Vec2 velVec) {
-    Vec2 lorentzForce = velVec * (B * p.q); //assumes sin(theta) = 1
-    return Vec2(lorentzForce.x.abs(), lorentzForce.y.abs());
-  }
-
-  Vec2 electric(Particle p, Vec2 E) {
-    Vec2 electricForce = E * p.q;
-    return electricForce;
-  }
-
-  Vec2 calculateAcc(Particle p) {
-    //List<Particle> particles
-    Vec2 acc = gravityAcc(p.m);
-    //force -= drag(p.vel);
-    return acc;
   }
 
   void update(List<Particle> particles) {
@@ -117,35 +87,56 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
     }
   }
 
+    Vec2 gravityAcc(double mass) { //gravitational force
+    return Vec2(0, g);
+  }
+
+  Vec2 drag(Vec2 velVec) {
+    /*Vec2 vFluidVec = Vec2(vFluid, vFluid);
+    Vec2 relativeVel = vFluidVec - velVec;
+    //Vec2 relativeVelSquared = relativeVel^2;
+    Vec2 dragForce = relativeVel * (0.5 * dFluid * p.A);
+    return Vec2(dragForce.x.abs(), dragForce.y.abs());*/
+    return velVec * k;
+  }
+
+  Vec2 calculateAcc(Particle p) {
+    Vec2 acc = new Vec2(0,0);
+    //List<Particle> particles
+    //acc = gravityAcc(p.m);
+    //force -= drag(p.vel);
+    return acc;
+  }
+
   //explicit verlet integration
   void updatePosition(Particle p) {
     if ( !p.accelerate || isStop ) return;
-
     
-    /*// 1) first half-kick with force at current coordinate
-    Vec2 v1 = p.vMinusHalf + calculateAcc(p) * (dt / (2 * p.m));
+    ///*// 1) first half-kick with force at current coordinate
+    p.vel = p.vMinusHalf + calculateAcc(p) * (dt / 2);
 
     // 2) adjusting velocity with Boris push for Lorentz force
-    v1 = borisPush(p, E, B, v1);
+    borisPush(p, E, dt);
 
     // 3) predict new position
-    Vec2 posPred = p.pos + v1 * dt.toDouble();
+    Vec2 posPred = p.pos + p.vel * dt.toDouble(); //NOT v1. Should be p.vel
 
     // 4) finalize position update
     p.pos = posPred;
+    
 
     // 5) recompute force at predicted position
     Vec2 fPred = calculateAcc(p);
 
     // 6) second half-kick for non-lorentz force
-    Vec2 v2 = v1 + fPred * (dt / (2 * p.m));
+    Vec2 v2 = p.vel + fPred * (dt / 2);
 
     // 7) adjusting velocity with Boris push for Lorentz
-    v2 = borisPush(p, E, B, v1);
+    borisPush(p, E, dt);
 
     // 8) store velocity for next step
     p.vMinusHalf = v2;
-    */
+    //*/
 
     //Verlet Integration
     /* 
@@ -168,3 +159,4 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
     
   }
 }
+

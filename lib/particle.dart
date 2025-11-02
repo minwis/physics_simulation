@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'vecs.dart';
 
+import 'environment_variable.dart';
+
 class Particle {
 
   double blockWidth = 50;
@@ -32,6 +34,8 @@ class Particle {
 
   Vec2 vMinusHalf = Vec2(0,0);
 
+  double qd = 0;
+
   //Vec2 
   
   Particle(
@@ -47,11 +51,13 @@ class Particle {
     this.r, 
     this.col) {
     A = pi * r * r;
+    qd = dt * q / (2*m);
   }
   
   //Particle(this.appliedAcc, this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col);
 
-  Widget buildWidget() {
+  Widget build() {
+
     return Positioned(
       
       left: pos.x,

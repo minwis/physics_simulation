@@ -141,11 +141,12 @@ class _MyHomePageState extends State<MyHomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
-      //backgroundColor: const Color.fromARGB(255, 221, 240, 200),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Row(
         children: [
           Expanded(child: SimulationPage()),
 
+          
           SizedBox(
             width: 200,
             child: SingleChildScrollView(
