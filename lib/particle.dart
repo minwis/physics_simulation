@@ -20,21 +20,18 @@ class Particle {
 
   Vec2 acc = Vec2(0,0);
   
-  Vec2 appliedAcc = Vec2(0,0);
-
   Vec2 pos = Vec2(0,0);
 
-  Vec2 posPrev = Vec2(0,0);
-  
   Vec2 vel = Vec2(0,0);
-
-  Vec2 force = Vec2(0,0);
 
   bool accelerate = true;
 
   Vec2 vMinusHalf = Vec2(0,0);
 
   double qd = 0;
+
+
+  Vec2 E = Vec2(10, 10); //Unit: Newton / Columb. 
   
   Particle(
     this.acc, 

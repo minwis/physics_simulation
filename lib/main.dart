@@ -4,6 +4,7 @@
     import 'particle.dart';
     import 'vecs.dart';
 
+
     void main() {
       runApp(const MyApp());
     }
@@ -89,9 +90,9 @@
       }
 
       void addNewParticle() {
-        Vec2 pos = new Vec2(0,0);
-        Vec2 vel = new Vec2(0,0);
-        Vec2 acc = new Vec2(0,0);
+        Vec2 pos = Vec2(0,0);
+        Vec2 vel = Vec2(0,0);
+        Vec2 acc = Vec2(0,0);
         Vec2 vMinusHalf = Vec2(0,0);
         double m = 0.1; 
         double q = 0;
@@ -208,6 +209,7 @@
                   },
                 ),
                 SizedBox(height: 16),
+                
                 Text("Be sure to press 'return/enter' key when entering variables.")
 
                 //color input
@@ -243,7 +245,7 @@
 
               
               SizedBox(
-                width: 200,
+                width: displayWidth,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
