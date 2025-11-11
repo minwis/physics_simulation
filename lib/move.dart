@@ -16,22 +16,8 @@ class SimulationPage extends StatefulWidget {
 class SimulationPageState extends State<SimulationPage> with TickerProviderStateMixin {
   static late Ticker ticker;
 
-  static List<Particle> particles = [
-    /*Particle(
-      Vec2(0, 0), //acc
-      Vec2(100, 100),//pos
-      Vec2(100, -100), //vel
-      Vec2(0, 0), //vMinusHalf
-      1, // m
-      1, // q
-      10, //r
-      Colors.green, //col
-    ),*/
-  ];
+  static List<Particle> particles = [];
 
-  List<Particle> particlesGetter() {
-    return particles;
-  }
 
   void muteTicker() {
     ticker.muted = true;
@@ -57,7 +43,7 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(children: particles.map((p) => p.build()).toList()),
+      body: Stack(children: particles.map((p) => p.toWidget()).toList()),
     );
   }
 
@@ -121,13 +107,10 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
       d = (((particles[i].pos.x - p.pos.x) * (particles[i].pos.x - p.pos.x)) + ((particles[i].pos.y - p.pos.y) * (particles[i].pos.y - p.pos.y)) );
       degree = atan((particles[i].pos.y - p.pos.y) / (particles[i].pos.x - p.pos.x));
       f = particles[i].q * K / (d*d);
-      fVec.x = f * sin(degree);
-      fVec.y = f * cos(degree);
+      fVec.x = f * cos(degree);
+      fVec.y = f * sin(degree);
 
-      p.E = Vec2(
-        p.E.x + fVec.x,
-        p.E.y + fVec.y,
-      );
+      p.E = p.E + fVec;
     }
     
     

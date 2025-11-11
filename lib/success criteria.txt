@@ -1,0 +1,7 @@
+1. The client should be able to observe particles moving in gravitational, electric, and magnetic fields.
+2. The client should be able to add a new particle that behaves independently of other particles and has customizable initial values. 
+3. The client should be able to see how the values of each particle change over time. 
+4. The client should be able to see the static variables of the simulation’s system.
+5. The client should be able to stop and resume the simulation.
+6. The client should be able to adjust values from particles and the system.
+7. The client should be able to reset the simulation to remove all existing particles and set the time to zero, thereby starting the simulation.

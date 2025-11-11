@@ -74,8 +74,7 @@
         List<String> parts = input.split(','); 
         //if comma is used
         if (parts.length == 2) { 
-          setState(() {
-            //if x value is not empty, update the x position
+          //if x value is not empty, update the x position
             if (parts.first != '') { 
               //converts parts.first(string) to x(double)
               x = double.tryParse(parts.first) ?? 0;
@@ -83,17 +82,16 @@
             if (parts.last != '') {
               y = double.tryParse(parts.last) ?? 0;
             }
-          });
         }
 
         return Vec2(x, y);
       }
 
       void addNewParticle() {
-        Vec2 pos = Vec2(0,0);
-        Vec2 vel = Vec2(0,0);
-        Vec2 acc = Vec2(0,0);
-        Vec2 vMinusHalf = Vec2(0,0);
+        Vec2 pos = new Vec2(0,0);
+        Vec2 vel = new Vec2(0,0);
+        Vec2 acc = new Vec2(0,0);
+        Vec2 vMinusHalf = new Vec2(0,0);
         double m = 0.1; 
         double q = 0;
         double r = 0; 
@@ -119,7 +117,8 @@
                       child: Text('Particle ${SimulationPageState.particles.length}')
                     )
                   );
-                  SimulationPageState.particles.add(
+                  setState(() {
+                    SimulationPageState.particles.add(
                     Particle(
                       acc,
                       pos,
@@ -130,7 +129,8 @@
                       r,
                       col,
                     ),
-                  );
+                  );  
+                  });
                 },
                 child: const Text('Save and Add'),
               ),
@@ -178,7 +178,7 @@
                     labelText: "Enter mass of the particle",
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (value) {
+                  onSubmitted: (value) {
                     setState(() {
                       m = double.tryParse(value) ?? 0.1;
                     });
@@ -190,7 +190,7 @@
                     labelText: "Enter charge of the particle",
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (value) {
+                  onSubmitted: (value) {
                     setState(() {
                       q = double.tryParse(value) ?? 0;
                     });
@@ -199,35 +199,29 @@
                 SizedBox(height: 16),
                 TextField(
                   decoration: InputDecoration(
-                    labelText: "Enter radius of the particle",
+                    labelText: "Enter display radius of the particle",
                     border: OutlineInputBorder(),
                   ),
-                  onChanged: (value) {
+                  onSubmitted: (value) {
                     setState(() {
-                      r = double.tryParse(value) ?? 0;
+                      r = double.tryParse(value) ?? 10;
                     });
                   },
                 ),
                 SizedBox(height: 16),
                 
-                Text("Be sure to press 'return/enter' key when entering variables.")
+                Text("Be sure to press 'return/enter' key when entering variables.",)
 
-                //color input
-                /*TextField(
-                  decoration: InputDecoration(
-                    labelText: "Enter color of the particle",
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      r = double.tryParse(value) ?? 0;
-                    });
-                  },
-                ),*/
               ],
             ),
           ),
         );
+      }
+
+      void adjustValues() {
+
+
+        
       }
 
       List<DropdownMenuItem<int>> particleMenuList = [];
@@ -269,7 +263,7 @@
                         ),
                         onChanged: (int? newValue) {
                           setState( () {
-                            _selectedParticle = newValue ?? 0;
+                            _selectedParticle = (newValue ?? null)!;
                           });
                         },
                         items: particleMenuList
@@ -343,6 +337,20 @@
                         child: Text("Resume"),
                       ),
 
+                      
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.red,
+                        ),
+                        onPressed: () {
+                          SimulationPageState.particles.removeWhere((obj) => obj is Particle);
+                          SimulationPageState.particles.clear();
+                          particleMenuList.clear();
+                        },
+                        child: Text("Reset"),
+                      ),
+
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
@@ -353,6 +361,19 @@
                           addNewParticle();
                         },
                       ),
+
+
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.black,
+                        ),
+                        child: const Text('Adjust Values'),
+                        onPressed: () {
+                          addNewParticle();
+                        },
+                      ),
+                      
                     ],
                   ),
                 ),

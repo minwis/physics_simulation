@@ -48,11 +48,8 @@ class Particle {
   
   //Particle(this.appliedAcc, this.coor, this.vel, this.acc, this.m, this.q, this.r, this.col);
 
-  Widget build() {
-
-    return Positioned(
-      
-      left: pos.x,
+  Widget toWidget() => Positioned (
+    left: pos.x,
       top: pos.y,
       
       child: Container(
@@ -63,6 +60,7 @@ class Particle {
           shape: BoxShape.circle,
         ),
       ),
-    );
-  }
+  );
+
+  
 }
