@@ -3,8 +3,8 @@ import 'package:flutter/scheduler.dart';
 import 'particle.dart';
 import '/environment_variable.dart';
 import 'vecs.dart';
+//import 'dart:math';
 import 'boris_pusher.dart';
-import 'dart:math';
 
 class SimulationPage extends StatefulWidget {
   const SimulationPage({super.key});
@@ -13,11 +13,11 @@ class SimulationPage extends StatefulWidget {
   SimulationPageState createState() => SimulationPageState();
 }
 
-class SimulationPageState extends State<SimulationPage> with TickerProviderStateMixin {
+class SimulationPageState extends State<SimulationPage>
+    with TickerProviderStateMixin {
   static late Ticker ticker;
 
   static List<Particle> particles = [];
-
 
   void muteTicker() {
     ticker.muted = true;
@@ -50,30 +50,42 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   void update(List<Particle> particles) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    for (int i = 0; i < particles.length; i++ ) { //iterate the "particles" list for all particles
-      
-      if (particles[i].pos.x <= 0) { //particle going beyond left boundary
+    for (int i = 0; i < particles.length; i++) {
+      //iterate the "particles" list for all particles
+
+      if (particles[i].pos.x <= 0) {
+        //particle going beyond left boundary
         particles[i].pos.x = 1; //return the particle to the leftmost position
         particles[i].accelerate = false; //prevent further acceleration
-      } else if (particles[i].pos.x >= screenWidth - 4 * particles[i].r - displayWidth) { //particle going beyond right boundary
-        particles[i].pos.x = screenWidth - 4 * particles[i].r - 1; //return the particle to the rightmost position
+      } else if (particles[i].pos.x >=
+          screenWidth - 4 * particles[i].r - displayWidth) {
+        //particle going beyond right boundary
+        particles[i].pos.x =
+            screenWidth -
+            4 * particles[i].r -
+            1; //return the particle to the rightmost position
         particles[i].accelerate = false; //prevent further acceleration
       }
 
-      if (particles[i].pos.y <= 0) { //particle going beyond maximum height
+      if (particles[i].pos.y <= 0) {
+        //particle going beyond maximum height
         particles[i].pos.y = 1; //return the particle to the maximum position
         particles[i].accelerate = false; //prevent further acceleration
-      } else if (particles[i].pos.y >= screenHeight - 4 * particles[i].r) { //particle going below minimum height
-        particles[i].pos.y = screenHeight - 4 * particles[i].r - 1; //return the particle to the minimum position
+      } else if (particles[i].pos.y >= screenHeight - 4 * particles[i].r) {
+        //particle going below minimum height
+        particles[i].pos.y =
+            screenHeight -
+            4 * particles[i].r -
+            1; //return the particle to the minimum position
         particles[i].accelerate = false; //prevent further acceleration
       }
 
-      updatePosition(particles[i], i); //update position
-      
+      updatePosition(particles[i], i);
     }
   }
 
-    Vec2 gravityAcc(double mass) { //gravitational force
+  Vec2 gravityAcc(double mass) {
+    //gravitational force
     return Vec2(0, g);
   }
 
@@ -89,29 +101,32 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
   Vec2 calculateAcc(Particle p) {
     Vec2 acc = p.acc;
     acc += gravityAcc(p.m);
-    
+
     return acc;
   }
 
   //explicit verlet integration
   void updatePosition(Particle p, int n) {
-    if ( !p.accelerate || isStop ) return;
+    if (!p.accelerate || isStop) return;
 
-    double d = 0;
-    double degree = 0;
-    double f = 0;
-    Vec2 fVec = Vec2(0,0);
-    for ( int i = 0; i < particles.length; i++ ) {
-      if ( i == n && (particles[i].vel.x == 0 || particles[i].vel.y == 0) ) continue;
+    //1) first half-kick with force at current coordinate
+    p.vel = p.vMinusHalf + calculateAcc(p) * (dt / 2);
 
-      d = (((particles[i].pos.x - p.pos.x) * (particles[i].pos.x - p.pos.x)) + ((particles[i].pos.y - p.pos.y) * (particles[i].pos.y - p.pos.y)) );
-      degree = atan((particles[i].pos.y - p.pos.y) / (particles[i].pos.x - p.pos.x));
-      f = particles[i].q * K / (d*d);
-      fVec.x = f * cos(degree);
-      fVec.y = f * sin(degree);
+    // 2) adjusting velocity with Boris push for Lorentz force
+    p.vel = borisPush(p, p.E, B, p.vel);
 
-      p.E = p.E + fVec;
-    }
+    // 3) predict new position
+    p.pos = p.pos + p.vel * dt.toDouble();
+
+    // 4) recompute acceleration at predicted position
+    Vec2 aPred = calculateAcc(p);
+
+    // 6) second half-kick for non-lorentz force
+    Vec2 v2 = p.vel + aPred * (dt / (2));
+
+    v2 = borisPush(p, p.E, B, v2);
+
+    // 8) store velocity for next step
+    p.vMinusHalf = v2;
   }
 }
-
