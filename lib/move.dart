@@ -112,53 +112,6 @@ class SimulationPageState extends State<SimulationPage> with TickerProviderState
 
       p.E = p.E + fVec;
     }
-    
-    
-    ///*// 1) first half-kick with force at current coordinate
-    p.vel = p.vMinusHalf + calculateAcc(p) * (dt / 2);
-
-    // 2) adjusting velocity with Boris push for Lorentz force
-    borisPush(p, p.E, dt);
-
-    // 3) predict new position
-    Vec2 posPred = p.pos + p.vel * dt.toDouble(); //NOT v1. Should be p.vel
-
-    // 4) finalize position update
-    p.pos = posPred;
-    
-
-    // 5) recompute force at predicted position
-    Vec2 fPred = calculateAcc(p);
-
-    // 6) second half-kick for non-lorentz force
-    Vec2 v2 = p.vel + fPred * (dt / 2);
-
-    // 7) adjusting velocity with Boris push for Lorentz
-    borisPush(p, p.E, dt);
-
-    // 8) store velocity for next step
-    p.vMinusHalf = v2;
-    //*/
-
-    //Verlet Integration
-    /* 
-    // 1. Calculate the half-step velocity (v(t + 0.5*dt))
-    var halfVel = p.vel + p.acc * (0.5 * dt);
-
-    // 2. Position Full-Step (r(t + dt))
-    p.pos = p.pos + halfVel * dt;
-
-    // 3. Calculate new acceleration (a(t + dt)) based on the new position
-    var newAcc = calculateAcc(p); // Assuming calculateAcc uses p.pos
-
-    // 4. Velocity Full-Step (v(t + dt))
-    // This uses the half-step velocity and the average of the old and new acceleration's second half contribution
-    p.vel = halfVel + newAcc * (0.5 * dt);
-
-    // 5. Update the acceleration for the next step's "old acceleration"
-    p.acc = newAcc;
-    */
-    
   }
 }
 
