@@ -42,6 +42,7 @@ class Particle {
     this.r,
     this.col,
   ) {
+    vMinusHalf = vel;
     A = pi * r * r;
     qd = dt * q / (2 * m);
   }

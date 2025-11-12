@@ -103,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Enter Initial Position (X, Y)",
                 border: OutlineInputBorder(),
               ),
-              onSubmitted: (value) {
+              onChanged: (value) {
                 pos = formatVecInput(value);
               },
             ),
@@ -310,12 +310,13 @@ class _MyHomePageState extends State<MyHomePage>
                       foregroundColor: Colors.red,
                     ),
                     onPressed: () {
-                      SimulationPageState.particles.removeWhere(
+                      /*SimulationPageState.particles.removeWhere(
                         // ignore: unnecessary_type_check
                         (obj) => obj is Particle,
-                      );
+                      );*/
                       SimulationPageState.particles.clear();
                       particleMenuList.clear();
+                      _selectedParticle = null;
                     },
                     child: Text("Reset"),
                   ),
