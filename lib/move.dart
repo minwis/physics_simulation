@@ -53,8 +53,7 @@ class SimulationPageState extends State<SimulationPage>
     for (int i = 0; i < particles.length; i++) {
       //iterate the "particles" list for all particles
 
-      int dummy = 0;
-
+      
       if (particles[i].pos.x <= 0) {
         //particle going beyond left boundary
         particles[i].pos.x = 1; //return the particle to the leftmost position
@@ -82,7 +81,9 @@ class SimulationPageState extends State<SimulationPage>
         particles[i].accelerate = false; //prevent further acceleration
       }
 
-      updatePosition(particles[i], i);
+      if ( particles[i].accelerate && !isStop ) {
+        updatePosition(particles[i], i);
+      }
     }
   }
 
@@ -109,7 +110,7 @@ class SimulationPageState extends State<SimulationPage>
 
   //explicit verlet integration
   void updatePosition(Particle p, int n) {
-    if (!p.accelerate || isStop) return;
+    //if (!p.accelerate || isStop) return;
 
     //1) first half-kick with force at current coordinate
     p.vel = p.vMinusHalf + calculateAcc(p) * (dt / 2);

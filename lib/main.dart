@@ -204,7 +204,91 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
-  void adjustValues() {}
+  void adjustValues() {
+    double previousG = g;
+    double previousDt = dt;
+    double previousB = B;
+    double previousK = k;
+
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Particle Characteristics'),
+        contentPadding: const EdgeInsets.all(20.0),
+        content: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Gravitational Field Strength",
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  g = double.tryParse(value) ?? previousG;
+                });
+              },
+            ),
+            SizedBox(height: 16),
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Time Step",
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  dt = double.tryParse(value) ?? previousDt;
+                });
+              },
+            ),
+            SizedBox(height: 16),
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Magnetic Field Strength",
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  B = double.tryParse(value) ?? previousB;
+                });
+              },
+            ),
+            SizedBox(height: 16),
+            TextField(
+              decoration: InputDecoration(
+                labelText: "Drag Coefficient",
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  k = double.tryParse(value) ?? previousK;
+                });
+              },
+            ),
+
+            Text(
+              "Be sure to press 'return/enter' key when entering variables.",
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+
+            child: const Text('Save and Add'),
+          ),
+        ],
+      ),
+    );
+  }
 
   List<DropdownMenuItem<int>> particleMenuList = [];
 
@@ -339,7 +423,7 @@ class _MyHomePageState extends State<MyHomePage>
                     ),
                     child: const Text('Adjust Values'),
                     onPressed: () {
-                      addNewParticle();
+                      adjustValues();
                     },
                   ),
                 ],
