@@ -5,7 +5,7 @@ double scaleFactor = 0.01; //scale factor 1: m/s; scale factor 1000: km/s
 
 double g = 9.8123;
 
-double dt = 0.01666666666667; //0.01666666666
+double dt = 0.016666666666666667;
 
 double B = 0.01; //Unit: Tesla. 1.4 is avg. magneticc field strength of commercial available neodymium magnet
 

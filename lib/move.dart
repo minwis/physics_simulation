@@ -53,7 +53,6 @@ class SimulationPageState extends State<SimulationPage>
     for (int i = 0; i < particles.length; i++) {
       //iterate the "particles" list for all particles
 
-      
       if (particles[i].pos.x <= 0) {
         //particle going beyond left boundary
         particles[i].pos.x = 1; //return the particle to the leftmost position

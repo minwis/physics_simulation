@@ -34,27 +34,42 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  int? _selectedParticle;
 
-  late AnimationController
-  _animationController; //declaring animation controller
+  late AnimationController _animationController; //declaring animation controller
+
+  double lastTime = 0;
+  double currentTime = 0;
+  double elapsedTime = 0;
 
   @override
   void initState() {
     super.initState();
-
+    
+    //declares animationController object
     _animationController = AnimationController(
-      //initializing animation controller
-      duration: Duration(minutes: 120),
+      //the particle should forever continue the motion
+      duration: Duration(days: 10),
       vsync: this,
     );
 
     _animationController
-        .forward(); //starts the animation from its lower bound(0) to its upper bound
+        //starts the animation from its lower bound(0) to its upper bound
+        .forward(); 
 
     _animationController.addListener(() {
-      //updates the animation everytime it is called.
-      setState(() {});
+      //checks how much time has elapsed since the start of the program
+      double currentTime = _animationController.lastElapsedDuration!.inMilliseconds / 1000.0;
+      //calculates how much real time had passed
+      elapsedTime = currentTime - lastTime;
+      //updates lastTime to currentTime for next iteration
+      lastTime = currentTime;
+
+      //if more than dt amount of time has passed from the previous frame
+      //update frame multiple times with fixed dt instead of updating once with variable dt
+      for ( double i = 0; i < elapsedTime / dt; i+= dt ) {
+        setState(() {});
+      }
+      
     });
   }
 
@@ -86,6 +101,8 @@ class _MyHomePageState extends State<MyHomePage>
     return Vec2(x, y);
   }
 
+  int? _selectedParticle;
+
   void addNewParticle() {
     Vec2 pos = Vec2(0, 0);
     Vec2 vel = Vec2(0, 0);
@@ -107,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Enter Initial Position (X, Y)",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
+              onSubmitted: (value) {
                 pos = formatVecInput(value);
               },
             ),
@@ -117,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Enter Initial Velocity (X, Y)",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
+              onSubmitted: (value) {
                 vel = formatVecInput(value);
               },
             ),
@@ -127,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Enter Initial Acceleration (X, Y)",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
+              onSubmitted: (value) {
                 acc = formatVecInput(value);
               },
             ),
@@ -139,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Enter mass of the particle",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
+              onSubmitted: (value) {
                 setState(() {
                   m = double.tryParse(value) ?? 0.1;
                 });
@@ -151,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Enter charge of the particle",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
+              onSubmitted: (value) {
                 setState(() {
                   q = double.tryParse(value) ?? 0;
                 });
@@ -163,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Enter display radius of the particle",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
+              onSubmitted: (value) {
                 setState(() {
                   r = double.tryParse(value) ?? 10;
                 });
@@ -227,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Gravitational Field Strength",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
+              onSubmitted: (value) {
                 setState(() {
                   g = double.tryParse(value) ?? previousG;
                 });
@@ -239,19 +256,22 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Time Step",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
-                setState(() {
-                  dt = double.tryParse(value) ?? previousDt;
+              onSubmitted: (value) {
+                final parsed = double.tryParse(value);
+                if (parsed != null) {
+                  setState(() {
+                    dt = parsed;
                 });
-              },
-            ),
+              }
+            }
+          ),
             SizedBox(height: 16),
             TextField(
               decoration: InputDecoration(
                 labelText: "Magnetic Field Strength",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
+              onSubmitted: (value) {
                 setState(() {
                   B = double.tryParse(value) ?? previousB;
                 });
@@ -263,7 +283,7 @@ class _MyHomePageState extends State<MyHomePage>
                 labelText: "Drag Coefficient",
                 border: OutlineInputBorder(),
               ),
-              onChanged: (value) {
+              onSubmitted: (value) {
                 setState(() {
                   k = double.tryParse(value) ?? previousK;
                 });
@@ -377,6 +397,7 @@ class _MyHomePageState extends State<MyHomePage>
                     onPressed: () {
                       _animationController.stop();
                       isStop = true;
+                      
                     },
                     child: Text("Stop"),
                   ),
@@ -398,13 +419,10 @@ class _MyHomePageState extends State<MyHomePage>
                       foregroundColor: Colors.red,
                     ),
                     onPressed: () {
-                      /*SimulationPageState.particles.removeWhere(
-                        // ignore: unnecessary_type_check
-                        (obj) => obj is Particle,
-                      );*/
                       SimulationPageState.particles.clear();
                       particleMenuList.clear();
                       _selectedParticle = null;
+
                     },
                     child: Text("Reset"),
                   ),
