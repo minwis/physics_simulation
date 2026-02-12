@@ -9,14 +9,21 @@ Vec2 zCrossProduct(Vec2 v1, double z2) {
 
 Vec2 borisPush(Particle p, Vec2 E, double dt, Vec2 vel) {
 
-  double t = p.q / p.m * B * 0.5 * dt; // z element only (0,0,t)
-  double s = 2 * t / (1 + t*t); // z element only (0,0,s)
+  //Step 1 in Criterion C, 5-3 Flowchart
+  double t = p.q / p.m * B * 0.5 * dt;
 
-  Vec2 vMinus = p.vel + (E * ((p.q / p.m) * 0.5 * dt));
+  //Step 2 in Criterion C, 5-3 Flowchart
+  double s = 2 * t / (1 + t*t);
 
+  //Step 3 in Criterion C, 5-3 Flowchart
+  Vec2 vMinus = p.velPlusHalf + (E * ((p.q / p.m) * 0.5 * dt));
+
+  //Step 4 in Criterion C, 5-3 Flowchart
   Vec2 vPrime = vMinus + zCrossProduct(vMinus, t);
 
+  //Step 5 in Criterion C, 5-3 Flowchart
   Vec2 vPlus = vMinus + zCrossProduct(vPrime, s);
 
+  //Step 6 + exit in Criterion C, 5-3 Flowchart
   return vPlus + (E * ((p.q / p.m) * 0.5 * dt));
 }

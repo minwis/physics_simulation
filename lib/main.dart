@@ -59,21 +59,26 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Vec2 formatVecInput(String value) {
-    final input = value.replaceAll(' ', '');
-    final parts = input.split(',');
+    String input = value.replaceAll(' ', '');//eliminate all spacing
+    List<String> parts = input.split(',');//split x and y into separate strings
 
     double x = 0;
     double y = 0;
 
-    if (parts.isNotEmpty && parts[0].isNotEmpty) {
-      x = double.tryParse(parts[0]) ?? 0;
+    if ( parts.length == 2 ) { //check if comma is used
+      if ( parts[0].isNotEmpty ) { //check if x value is entered
+        x = double.tryParse(parts[0]) ?? 0; //try converting parts[0] to double, filter non-number inputs
+      }
+      if ( parts[1].isNotEmpty ) { //check if y value is entered
+        y = double.tryParse(parts[0]) ?? 0; //try converting parts[1] to double, filter non-number inputs
+      }
     }
-    if (parts.length > 1 && parts[1].isNotEmpty) {
-      y = double.tryParse(parts[1]) ?? 0;
+    else { //if user did not input anything
+      x = 0;
+      y = 0;
     }
 
-    // Prevent NaN or Infinity from being returned
-    if (x.isNaN || y.isNaN || x.isInfinite || y.isInfinite) {
+    if (x.isNaN || y.isNaN || x.isInfinite || y.isInfinite) { // Prevent NaN or Infinity from being returned
       x = 0;
       y = 0;
     }
@@ -85,7 +90,6 @@ class _MyHomePageState extends State<MyHomePage>
     Vec2 pos = Vec2(0, 0);
     Vec2 vel = Vec2(0, 0);
     Vec2 acc = Vec2(0, 0);
-    Vec2 vMinusHalf = Vec2(0, 0);
     double m = 0.1;
     double q = 0;
     double r = 0;
@@ -184,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage>
               Navigator.of(context).pop();
 
               SimulationPageState.particles.add(
-                Particle(acc, pos, vel, vMinusHalf, m, q, r, col),
+                Particle(acc, pos, vel, vel, m, q, r, col),
               );
 
               int newIndex = SimulationPageState.particles.length-1;

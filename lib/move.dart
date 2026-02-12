@@ -93,11 +93,6 @@ class SimulationPageState extends State<SimulationPage>
   }
 
   Vec2 drag(Vec2 velVec) {
-    /*Vec2 vFluidVec = Vec2(vFluid, vFluid);
-    Vec2 relativeVel = vFluidVec - velVec;
-    //Vec2 relativeVelSquared = relativeVel^2;
-    Vec2 dragForce = relativeVel * (0.5 * dFluid * p.A);
-    return Vec2(dragForce.x.abs(), dragForce.y.abs());*/
     return velVec * k;
   }
 
@@ -108,28 +103,20 @@ class SimulationPageState extends State<SimulationPage>
     return acc;
   }
 
-  //explicit verlet integration
   void updatePosition(Particle p, int n) {
-    //if (!p.accelerate || isStop) return;
+    //Step 1 in Criterion C, 5-2-2 Flowchart
+    Vec2 acc = calculateAcc(p);
+    p.velPlusHalf = p.vel + acc * (dt / 2);
 
-    //1) first half-kick with force at current coordinate
-    p.vel = p.vMinusHalf + calculateAcc(p) * (dt / 2);
+    //Step 2 in Criterion C, 5-2-2 Flowchart
+    p.velPlusHalf = borisPush(p, p.E, B, p.velPlusHalf);
 
-    // 2) adjusting velocity with Boris push for Lorentz force
-    p.vel = borisPush(p, p.E, B, p.vel);
+    //Step 3 in Criterion C, 5-2-2 Flowchart
+    p.pos = p.pos + p.velPlusHalf * dt.toDouble();
 
-    // 3) predict new position
-    p.pos = p.pos + p.vel * dt.toDouble();
-
-    // 4) recompute acceleration at predicted position
-    Vec2 aPred = calculateAcc(p);
-
-    // 6) second half-kick for non-lorentz force
-    Vec2 v2 = p.vel + aPred * (dt / (2));
-
-    v2 = borisPush(p, p.E, B, v2);
-
-    // 8) store velocity for next step
-    p.vMinusHalf = v2;
+    //Step 4 in Criterion C, 5-2-2 Flowchart
+    Vec2 accPredict = calculateAcc(p);
+    p.vel = p.velPlusHalf + accPredict * (dt / (2));
   }
+
 }

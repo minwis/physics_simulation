@@ -22,11 +22,11 @@ class Particle {
 
   Vec2 pos = Vec2(0, 0);
 
-  Vec2 vel = Vec2(0, 0);
+  Vec2 velPlusHalf = Vec2(0, 0);
 
   bool accelerate = true;
 
-  Vec2 vMinusHalf = Vec2(0, 0);
+  Vec2 vel = Vec2(0, 0);
 
   double qd = 0;
 
@@ -35,14 +35,14 @@ class Particle {
   Particle(
     this.acc,
     this.pos,
+    this.velPlusHalf,
     this.vel,
-    this.vMinusHalf,
     this.m,
     this.q,
     this.r,
     this.col,
   ) {
-    vMinusHalf = vel;
+    vel = velPlusHalf;
     A = pi * r * r;
     qd = dt * q / (2 * m);
   }
