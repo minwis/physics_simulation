@@ -75,30 +75,73 @@ class _MyHomePageState extends State<MyHomePage>
 
   Vec2 formatVecInput(String value) {
     String input = value.replaceAll(' ', '');//eliminate all spacing
-    List<String> parts = input.split(',');//split x and y into separate strings
 
-    double x = 0;
-    double y = 0;
+    //initialized with zero to accept inputs starting with dots
+    String xStr = "0";
+    String yStr = "0";
 
-    if ( parts.length == 2 ) { //check if comma is used
-      if ( parts[0].isNotEmpty ) { //check if x value is entered
-        x = double.tryParse(parts[0]) ?? 0; //try converting parts[0] to double, filter non-number inputs
+    bool commaUsed = false; //before comma, or when comma is not used: consider characters as part of x-value. after comma: consider characters as part of y-value
+    bool numberAppeared = false;
+    bool dotUsed = false;
+    int xSign = 1;
+    int ySign = 1;
+    
+    
+    for ( int i = 0; i < input.length; i++ ) {
+      int characterInt = input.codeUnitAt(i); //character in specific index of the input
+      String characterStr = input[i]; //unicode of characterInt
+      if ( (characterInt < 48 || characterInt > 57 ) ) { //when character is NOT a number
+        //when character is comma
+        if ( characterInt == ','.runes.first ) { 
+          commaUsed = true; //now consider characters as part of y-value
+          //accept minus and dot symbols for y-value
+          numberAppeared = false; 
+          dotUsed = false;
+        }
+        //when character is the minus sign
+        else if ( characterInt == '-'.runes.first && !numberAppeared ) { //only accept minus sign if it is used before numbers
+          //change x value's sign to negative
+          if ( !commaUsed ) { 
+            xSign = -1;
+          }
+          //change y value's sign to negative
+          else { 
+            ySign = -1;
+          }
+        }
+        //when the character is the dot symbol, representing start of decimal symbol.
+        else if ( characterInt == '.'.runes.first && !dotUsed ) { //ignore redundant decimal place symbols
+          //consider as part of x value
+          if ( !commaUsed ) { 
+            xStr += characterStr;
+            dotUsed = true; //prohibit adding more than one dot in xStr because it can can cause error when parsing string to double
+          }
+          //consider as part of y value
+          else {
+            yStr += characterStr;
+            dotUsed = true; //prohibit adding more than one dot in yStr
+          }
+        }
       }
-      if ( parts[1].isNotEmpty ) { //check if y value is entered
-        y = double.tryParse(parts[0]) ?? 0; //try converting parts[1] to double, filter non-number inputs
+      //when character is a number
+      else { 
+        numberAppeared = true; //signal that number had appeared and prevent accepting minus sign that could be misentered
+        if ( !commaUsed ) {
+          xStr += characterStr; //add number to the string as part of x value
+        }
+        else {
+          yStr += characterStr; //add number to the string as part of y value
+        }
       }
-    }
-    else { //if user did not input anything
-      x = 0;
-      y = 0;
+      
     }
 
-    if (x.isNaN || y.isNaN || x.isInfinite || y.isInfinite) { // Prevent NaN or Infinity from being returned
-      x = 0;
-      y = 0;
-    }
+    double x = double.tryParse(xStr) ?? 0.0; //attempt converting string to double value. if fail, set to zero
+    x *= xSign; //flip the sign if there was minus sign
+    double y = double.tryParse(yStr) ?? 0.0; //attempt converting string to double value. if fail, set to zero
+    y *= ySign; //flip the sign if there was minus sign
 
-    return Vec2(x, y);
+    return Vec2(x, y); //return as a vector
   }
 
   int? _selectedParticle;
