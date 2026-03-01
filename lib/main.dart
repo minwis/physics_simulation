@@ -270,7 +270,6 @@ class _MyHomePageState extends State<MyHomePage>
 
   void adjustValues() {
     double previousG = g;
-    double previousDt = dt;
     double previousB = B;
     double previousK = k;
 
